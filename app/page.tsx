@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, useScroll, AnimatePresence } from "framer-motion"
+import { motion, useScroll } from "framer-motion"
 import {
   ChevronDown,
   Phone,
@@ -13,8 +13,6 @@ import {
   Sun,
   Moon,
   Globe,
-  Menu,
-  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { HeroSlideshow } from "@/components/hero-slideshow"
@@ -25,7 +23,6 @@ function RestaurantContent() {
   const [activeSection, setActiveSection] = useState("home")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
   const { scrollY } = useScroll()
@@ -56,7 +53,6 @@ function RestaurantContent() {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }
-    setIsMobileMenuOpen(false)
   }
 
   const navigationItems = [
@@ -184,16 +180,6 @@ function RestaurantContent() {
 
             {/* Controls */}
             <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`lg:hidden h-8 w-8 sm:h-10 sm:w-10 p-0 hover:bg-white/10 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
-              >
-                {isMobileMenuOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}
-              </Button>
-
               {/* Theme Toggle */}
               <Button
                 variant="ghost"
@@ -201,7 +187,7 @@ function RestaurantContent() {
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className={`h-8 w-8 sm:h-10 sm:w-10 p-0 hover:bg-white/10 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
               >
-                {theme === "dark" ? <Sun className="h-3 w-3 sm:h-4 sm:w-4" /> : <Moon className="h-3 w-3 sm:h-4 sm:w-4" />}
+                {theme === "dark" ? <Sun className="h-5 w-5 sm:h-6 sm:w-6" /> : <Moon className="h-5 w-5 sm:h-6 sm:w-6" />}
               </Button>
 
               {/* Language Selector */}
@@ -212,7 +198,7 @@ function RestaurantContent() {
                   onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
                   className={`hover:bg-white/10 px-2 sm:px-3 py-2 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
                 >
-                  <Globe className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <Globe className="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2" />
                   <span className="text-xs sm:text-sm font-medium">
                     {languages[language].flag} <span className="hidden sm:inline">{language}</span>
                   </span>
@@ -246,212 +232,96 @@ function RestaurantContent() {
           </div>
         </div>
 
-        {/* Mobile Menu Overlay */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-md z-40"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-black/90 backdrop-blur-xl border-l border-white/20 shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="absolute top-4 right-4 z-10">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="h-10 w-10 p-0 text-white hover:bg-white/20 rounded-full"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-                <div className="p-6 pt-16 text-white">
-                  <div className="space-y-3">
-                    {navigationItems.map((item, index) => (
-                      <motion.button
-                        key={item.key}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        onClick={() => scrollToSection(item.key)}
-                        className={`w-full text-left font-inter text-lg font-medium transition-all duration-300 px-5 py-4 rounded-xl backdrop-blur-lg border shadow-lg ${
-                          activeSection === item.key
-                            ? "text-white font-semibold bg-[#ff0092]/90 border-[#ff0092] shadow-[#ff0092]/30"
-                            : "text-white hover:text-white hover:bg-white/25 bg-white/15 border-white/30 hover:border-white/50"
-                        }`}
-                      >
-                        {item.label}
-                      </motion.button>
-                    ))}
-                  </div>
-
-                  <div className="mt-8 pt-6 space-y-4">
-                    <div className="professional-container p-4 bg-white/10 backdrop-blur-lg border border-white/20">
-                      <Button
-                        size="lg"
-                        className="w-full text-black font-semibold px-6 py-3 text-base rounded-xl transition-all duration-300 hover:scale-105 shadow-lg bg-[#ff0092] hover:bg-[#ff3daa]"
-                        onClick={() => {
-                          window.open(
-                            "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
-                            "_blank",
-                          )
-                          setIsMobileMenuOpen(false)
-                        }}
-                      >
-                        <ExternalLink className="mr-2 h-5 w-5" />
-                        {t("menu")}
-                      </Button>
-
-                      <div className="flex space-x-3 mt-4">
-                        <Button
-                          size="lg"
-                          className="flex-1 text-black transition-all duration-300 hover:scale-105 p-3 bg-[#ff0092] hover:bg-[#ff3daa] shadow-lg"
-                          onClick={() => {
-                            window.open("https://www.instagram.com/busa_del_sauc/", "_blank")
-                            setIsMobileMenuOpen(false)
-                          }}
-                        >
-                          <Instagram size={20} />
-                        </Button>
-                        <Button
-                          size="lg"
-                          className="flex-1 text-black transition-all duration-300 hover:scale-105 p-3 bg-[#ff0092] hover:bg-[#ff3daa] shadow-lg"
-                          onClick={() => {
-                            window.open("https://www.facebook.com/baitacaprioli/?locale=it_IT", "_blank")
-                            setIsMobileMenuOpen(false)
-                          }}
-                        >
-                          <Facebook size={20} />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Mobile Menu Overlay - RIMOSSO */}
       </nav>
 
       {/* Hero Section - Ultra Compact Version */}
-      <section id="home" className="relative h-[100svh] flex items-center justify-center overflow-hidden pb-4 sm:pb-8">
+      <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
         <HeroSlideshow />
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2 }}
-          className="relative z-20 text-center text-white px-3 sm:px-6 max-w-6xl mx-auto hero-content"
-        >
-          {/* Badge + Title */}
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4 z-20">
+          
+          {/* Benvenuti Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, delay: 0.3 }}
-            className="mb-0.5 sm:mb-2"
+            className="mb-4"
           >
-            <div className="professional-container glass-morphism inline-block mb-0.5 px-2 sm:px-3 md:px-6 py-0.5 sm:py-1">
-              <p
-                className={`font-inter text-xs sm:text-sm md:text-base font-light uppercase tracking-widest ${
-                  theme === "dark" ? "text-[#ff0092]" : "text-amber-400"
-                }`}
-              >
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-3 py-2 mb-6 inline-block">
+              <p className={`text-sm font-light uppercase tracking-widest ${
+                theme === "dark" ? "text-[#ff0092]" : "text-amber-400"
+              }`}>
                 {t("hero.welcome")}
               </p>
             </div>
-            <h1 className="font-inter text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold professional-text-shadow mb-0.5 text-white leading-[0.9]">
+            
+            <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold text-white mb-6 leading-tight">
               La Busa del Sauc
             </h1>
           </motion.div>
 
-          {/* Description */}
+          {/* Descrizione */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="mb-1.5 sm:mb-3"
+            className="mb-8"
           >
-            <div className="professional-container glass-morphism max-w-[420px] mx-auto px-2 sm:px-3 py-1">
-              <p className="font-inter text-sm sm:text-base md:text-lg leading-tight font-light">{t("hero.subtitle")}</p>
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-6 py-4 max-w-2xl mx-auto">
+              <p className="text-base sm:text-lg font-light leading-relaxed">
+                {t("hero.subtitle")}
+              </p>
             </div>
           </motion.div>
 
-          {/* Buttons */}
+          {/* Pulsanti */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.9 }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl"
           >
-            <div id="hero-cta-row" className="relative z-10 w-full max-w-[980px] px-2 md:px-0 mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 md:gap-6 place-items-stretch">
-                <div className="sm:min-w-[96px] order-1">
-                  <Button
-                    size="lg"
-                    className={`w-full text-black font-semibold px-3 py-2.5 text-sm sm:text-xs md:text-base sm:px-3 md:px-10 md:py-4 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg h-10 sm:h-12 md:h-16 ${
-                      theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-500"
-                    }`}
-                    onClick={() =>
-                      window.open(
-                        "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
-                        "_blank",
-                      )
-                    }
-                  >
-                    <ExternalLink className="mr-1 md:mr-2 h-4 w-4 md:h-5 md:w-5" />
-                    {t("menu")}
-                  </Button>
-                </div>
+            <Button
+              size="lg"
+              className={`h-12 text-black font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg ${
+                theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-600"
+              }`}
+              onClick={() =>
+                window.open(
+                  "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
+                  "_blank",
+                )
+              }
+            >
+              <ExternalLink className="mr-2 h-5 w-5" />
+              {t("menu")}
+            </Button>
 
-                <div className="sm:min-w-[96px] order-2">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full border-white/30 text-white hover:bg-white/10 px-3 py-2.5 text-sm sm:text-xs md:text-base sm:px-3 md:px-10 md:py-4 rounded-xl transition-all duration-300 hover:scale-105 bg-transparent backdrop-blur-sm h-10 sm:h-12 md:h-16"
-                    onClick={() => scrollToSection("about")}
-                  >
-                    {t("hero.discover")}
-                  </Button>
-                </div>
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-12 border-white/30 text-white hover:bg-white/10 rounded-xl transition-all duration-300 hover:scale-105 bg-transparent backdrop-blur-sm"
+              onClick={() => scrollToSection("about")}
+            >
+              {t("hero.discover")}
+            </Button>
 
-                <div className="sm:min-w-[96px] order-3">
-                  <a
-                    href="https://www.wearerighello.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 sm:gap-1 md:gap-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-3 py-2.5 text-sm sm:text-xs md:text-base sm:px-2 md:px-8 md:py-4 rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 h-10 sm:h-12 md:h-16 w-full"
-                  >
-                    <div className="flex items-center gap-2 sm:gap-1 md:gap-4">
-                      <img
-                        src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/6814c5b54bc85218c633c5a8_Righello_logo_E.png"
-                        alt="Righello Icon"
-                        className={`w-4 h-4 sm:w-4 sm:h-4 md:w-8 md:h-8 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
-                      />
-                      <div className="flex flex-col items-start">
-                        <span className="text-[9px] sm:text-[10px] md:text-xs uppercase tracking-wider opacity-80 font-medium hidden md:block">
-                          Official Partner of
-                        </span>
-                        <img
-                          src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/65774a509c1f2e0f55137c8e_Logo_righello.svg"
-                          alt="Righello"
-                          className={`h-3 sm:h-3 md:h-5 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
-                        />
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
+            <a
+              href="https://www.wearerighello.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 h-12 px-4"
+            >
+              <img
+                src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/6814c5b54bc85218c633c5a8_Righello_logo_E.png"
+                alt="Righello Icon"
+                className={`w-5 h-5 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
+              />
+              <span className="text-sm font-medium">Righello</span>
+            </a>
           </motion.div>
-        </motion.div>
+        </div>
 
         <motion.div
           animate={{ y: [0, 6, 0] }}
