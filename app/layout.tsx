@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   title: "La Busa del Sauc - Premium Mountain Restaurant | Piancavallo",
   description:
     "Experience authentic mountain cuisine at La Busa del Sauc in Piancavallo. Premium dining with traditional flavors, cozy atmosphere, and exceptional service. Open Friday-Sunday.",
-  generator: "v0.app",
   keywords: "restaurant, mountain cuisine, Piancavallo, Italian food, traditional dining, premium restaurant",
   openGraph: {
     title: "La Busa del Sauc - Premium Mountain Restaurant",
