@@ -51,7 +51,7 @@ export function HeroSlideshow() {
         </motion.div>
       </AnimatePresence>
 
-      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 space-x-3 z-20 hidden sm:flex">
         <div className="professional-container glass-morphism flex space-x-3 px-6 py-3">
           {heroImages.map((_, index) => (
             <button

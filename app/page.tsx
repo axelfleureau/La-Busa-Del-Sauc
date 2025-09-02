@@ -145,13 +145,13 @@ function RestaurantContent() {
       `}</style>
 
       <nav className="fixed top-0 left-0 right-0 z-50 glass-morphism border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <motion.img
               src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1d87e5d2e62b54c46ec1c_busa_del_sauc.png"
               alt="La Busa del Sauc"
-              className={`h-8 sm:h-10 md:h-12 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-0"}`}
+              className={`h-12 sm:h-10 md:h-12 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-0"}`}
               whileHover={{ scale: 1.05 }}
             />
 
@@ -185,9 +185,9 @@ function RestaurantContent() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={`h-8 w-8 sm:h-10 sm:w-10 p-0 hover:bg-white/10 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                className={`h-12 w-12 sm:h-10 sm:w-10 p-0 hover:bg-white/10 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
               >
-                {theme === "dark" ? <Sun className="h-5 w-5 sm:h-6 sm:w-6" /> : <Moon className="h-5 w-5 sm:h-6 sm:w-6" />}
+                {theme === "dark" ? <Sun className="h-8 w-8 sm:h-4 sm:w-4" /> : <Moon className="h-8 w-8 sm:h-4 sm:w-4" />}
               </Button>
 
               {/* Language Selector */}
@@ -196,10 +196,10 @@ function RestaurantContent() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                  className={`hover:bg-white/10 px-2 sm:px-3 py-2 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                  className={`hover:bg-white/10 px-4 sm:px-3 py-3 sm:py-2 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
                 >
-                  <Globe className="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm font-medium">
+                  <Globe className="h-8 w-8 sm:h-4 sm:w-4 mr-2 sm:mr-2" />
+                  <span className="text-base sm:text-sm font-medium">
                     {languages[language].flag} <span className="hidden sm:inline">{language}</span>
                   </span>
                 </Button>
@@ -239,7 +239,7 @@ function RestaurantContent() {
       <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
         <HeroSlideshow />
 
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4 z-20">
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4 pt-24 z-20">
           
           {/* Benvenuti Badge */}
           <motion.div
@@ -318,7 +318,16 @@ function RestaurantContent() {
                 alt="Righello Icon"
                 className={`w-5 h-5 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
               />
-              <span className="text-sm font-medium">Righello</span>
+              <div className="flex flex-col items-start">
+                <span className="text-xs uppercase tracking-wider opacity-80 font-medium">
+                  Partner of
+                </span>
+                <img
+                  src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/65774a509c1f2e0f55137c8e_Logo_righello.svg"
+                  alt="Righello"
+                  className={`h-3 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
+                />
+              </div>
             </a>
           </motion.div>
         </div>

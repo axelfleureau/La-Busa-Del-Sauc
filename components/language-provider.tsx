@@ -63,7 +63,7 @@ const translations = {
     AL: "MIRË SE VINI NË",
   },
   "hero.subtitle": {
-    IT: "Un locale rinnovato pronto ad accogliervi e a coccolarvi in un'atmosfera accogliente e calorosa accompagnandovi con una selezione di prodotti del territorio per rendere confortevoli i vostri momenti di relax.",
+    IT: "Un locale rinnovato che vi accoglie con calore e vi coccola con i sapori del territorio, per trasformare ogni momento di relax in un piacere autentico.",
     EN: "A renovated venue ready to welcome and pamper you in a warm and welcoming atmosphere, accompanying you with a selection of local products to make your moments of relaxation comfortable.",
     DE: "Ein renoviertes Lokal, bereit Sie in warmer und einladender Atmosphäre zu empfangen und zu verwöhnen, begleitet von einer Auswahl regionaler Produkte für entspannte Momente.",
     BS: "Obnovljeni lokal spreman da vas dočeka i mazi u toploj i gostoljubivoj atmosferi, prateći vas izborom lokalnih proizvoda za ugodne trenutke opuštanja.",
