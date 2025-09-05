@@ -1,0 +1,27 @@
+{
+  "name": "Broker Motors - Luxury Car Auctions",
+  "short_name": "Broker Motors",
+  "description": "The leading platform for luxury car auctions and trading",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b5cff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/brand/broker-motors-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/brand/broker-motors-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["automotive", "business", "shopping"],
+  "lang": "en",
+  "dir": "ltr"
+}

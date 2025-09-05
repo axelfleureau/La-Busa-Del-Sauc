@@ -1,35 +1,245 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { motion, useScroll } from "framer-motion"
 import {
   ChevronDown,
-  Phone,
-  MapPin,
-  Clock,
-  Instagram,
-  Facebook,
-  ExternalLink,
   Sun,
   Moon,
   Globe,
+  Car,
+  Gavel,
+  Clock,
+  Eye,
+  MapPin,
+  Shield,
+  CheckCircle,
+  Users,
+  FileText,
+  Truck,
+  Award,
+  ArrowRight,
+  BookOpen,
+  Youtube,
+  Instagram,
+  Linkedin,
+  Phone,
+  Mail,
+  LocateOffIcon as LocationIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { HeroSlideshow } from "@/components/hero-slideshow"
-import { ThemeProvider, useTheme } from "@/components/theme-provider"
-import { LanguageProvider, useLanguage, languages } from "@/components/language-provider"
+import { useTheme } from "@/components/theme-provider"
+import { useLanguage, languages } from "@/components/language-provider"
 
-function RestaurantContent() {
+function BrokerMotorsContent() {
   const [activeSection, setActiveSection] = useState("home")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    car: "",
+    mileage: "",
+    media: "",
+    privacy: false,
+  })
   const { theme, setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
   const { scrollY } = useScroll()
 
   useEffect(() => {
+    // Preload critical images
+    const criticalImages = [
+      "/audi-r8-v10-plus-luxury-sports-car-studio-photo.jpg",
+      "/porsche-911-gt3-miami-blue-luxury-sports-car-studi.jpg",
+      "/brand/broker-motors-logo.png",
+    ]
+
+    criticalImages.forEach((src) => {
+      const link = document.createElement("link")
+      link.rel = "preload"
+      link.as = "image"
+      link.href = src
+      document.head.appendChild(link)
+    })
+
+    // Add keyboard navigation support
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowLanguageDropdown(false)
+        setShowPrivacyModal(false)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  const faqItems = [
+    {
+      question: "What are the commission rates?",
+      answer:
+        "Our commission structure is transparent and competitive. Seller commission is 8% + VAT for vehicles under £50k, 6% + VAT for vehicles £50k-£150k, and 5% + VAT for vehicles over £150k. Buyer's premium is 5% + VAT.",
+    },
+    {
+      question: "How does the security deposit work?",
+      answer:
+        "A refundable security deposit of £1,000 is required to participate in auctions. This is fully refundable after the auction period ends, regardless of whether you win any lots. The deposit helps ensure serious bidding participation.",
+    },
+    {
+      question: "What is a reserve price?",
+      answer:
+        "A reserve price is the minimum amount the seller is willing to accept. If bidding doesn't reach the reserve, the vehicle won't be sold. 'No Reserve' auctions will sell to the highest bidder regardless of the final price.",
+    },
+    {
+      question: "How thorough are the vehicle inspections?",
+      answer:
+        "Every vehicle undergoes a comprehensive 200+ point inspection by certified technicians. This includes mechanical, electrical, and cosmetic assessment with detailed photography and documentation available to all bidders.",
+    },
+    {
+      question: "How do payments work?",
+      answer:
+        "All payments are processed through our secure escrow service. Winning bidders have 7 days to complete payment via bank transfer. Funds are held securely until vehicle collection is arranged.",
+    },
+    {
+      question: "What about import duties and customs?",
+      answer:
+        "For international buyers, we provide full documentation for customs clearance. Import duties and VAT are the buyer's responsibility. We can recommend trusted customs agents and provide all necessary paperwork.",
+    },
+    {
+      question: "Can I return a vehicle after purchase?",
+      answer:
+        "All sales are final. However, our detailed inspection reports and extensive photography ensure you have complete information before bidding. We encourage viewing appointments for high-value lots.",
+    },
+  ]
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!formData.privacy) {
+      alert("Please accept the privacy policy to continue.")
+      return
+    }
+    console.log("Form submitted:", formData)
+    // Here you would typically send the data to your backend
+    alert("Thank you! We'll contact you within 24 hours with a valuation.")
+  }
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const featuredLots = [
+    {
+      id: "r8-v10-2016",
+      title: "Audi R8 V10 Plus",
+      year: 2016,
+      mileage: 7438,
+      color: "Ara Blue",
+      reserve: true,
+      endsAt: "2025-10-01T19:00:00Z",
+      image: "/audi-r8-v10-plus-luxury-sports-car-studio-photo.jpg",
+      status: "LIVE",
+      currentBid: "£145,000",
+    },
+    {
+      id: "911-gt3-9912",
+      title: "Porsche 911 GT3 (991.2)",
+      year: 2018,
+      mileage: 5338,
+      color: "Miami Blue",
+      reserve: false,
+      endsAt: "2025-09-20T18:30:00Z",
+      image: "/porsche-911-gt3-miami-blue-luxury-sports-car-studi.jpg",
+      status: "NO RESERVE",
+      currentBid: "£178,500",
+    },
+    {
+      id: "huracan-evo-2020",
+      title: "Lamborghini Huracán EVO",
+      year: 2020,
+      mileage: 3200,
+      color: "Verde Mantis",
+      reserve: true,
+      endsAt: "2025-09-25T20:00:00Z",
+      image: "/lamborghini-huracan-evo-green-luxury-supercar-stud.jpg",
+      status: "PRESTO",
+      currentBid: "£195,000",
+    },
+    {
+      id: "f-type-svr-2019",
+      title: "Jaguar F-Type SVR",
+      year: 2019,
+      mileage: 8900,
+      color: "British Racing Green",
+      reserve: true,
+      endsAt: "2025-09-28T17:45:00Z",
+      image: "/jaguar-f-type-svr-british-racing-green-luxury-spor.jpg",
+      status: "LIVE",
+      currentBid: "£89,500",
+    },
+    {
+      id: "amg-gt-63s-2021",
+      title: "Mercedes-AMG GT 63 S",
+      year: 2021,
+      mileage: 4100,
+      color: "Designo Magno Brilliant Blue",
+      reserve: false,
+      endsAt: "2025-09-30T19:15:00Z",
+      image: "/mercedes-amg-gt-63-s-blue-luxury-grand-tourer-stud.jpg",
+      status: "NO RESERVE",
+      currentBid: "£142,000",
+    },
+    {
+      id: "db11-v12-2020",
+      title: "Aston Martin DB11 V12",
+      year: 2020,
+      mileage: 6200,
+      color: "Storm Black",
+      reserve: true,
+      endsAt: "2025-10-02T18:00:00Z",
+      image: "/aston-martin-db11-v12-black-luxury-grand-tourer-st.jpg",
+      status: "PRESTO",
+      currentBid: "£165,000",
+    },
+  ]
+
+  const getTimeRemaining = (endDate: string) => {
+    const now = new Date().getTime()
+    const end = new Date(endDate).getTime()
+    const difference = end - now
+
+    if (difference <= 0) return "Ended"
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+
+    if (days > 0) return `${days}d ${hours}h`
+    if (hours > 0) return `${hours}h ${minutes}m`
+    return `${minutes}m`
+  }
+
+  const getStatusBadge = (status: string) => {
+    const baseClasses = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider"
+    switch (status) {
+      case "LIVE":
+        return `${baseClasses} bg-red-500 text-white animate-pulse`
+      case "NO RESERVE":
+        return `${baseClasses} bg-green-500 text-white`
+      case "PRESTO":
+        return `${baseClasses} bg-orange-500 text-white`
+      default:
+        return `${baseClasses} bg-gray-500 text-white`
+    }
+  }
+
+  useEffect(() => {
+    const sections = ["home", "lots", "usp", "how", "sell", "contact"]
     const handleScroll = () => {
-      const sections = ["home", "about", "menu", "gallery", "contact"]
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -56,122 +266,57 @@ function RestaurantContent() {
   }
 
   const navigationItems = [
-    { key: "home", label: t("nav.home") },
-    { key: "about", label: t("nav.about") },
-    { key: "menu", label: t("nav.menu") },
-    { key: "gallery", label: t("nav.gallery") },
+    { key: "home", label: t("nav.stock") },
+    { key: "lots", label: t("nav.auctions") },
+    { key: "sell", label: t("nav.sell") },
+    { key: "usp", label: t("nav.services") },
+    { key: "how", label: t("nav.insights") },
     { key: "contact", label: t("nav.contact") },
   ]
 
-  const menuItems = {
-    antipasti: [
-      { name: t("menu.items.tagliere"), price: "€15,00" },
-      { name: t("menu.items.formaggi"), price: "€14,00" },
-      { name: t("menu.items.tartare"), price: "€18,00" },
-      { name: t("menu.items.gazpacho"), price: "€13,00" },
-    ],
-    primi: [
-      { name: t("menu.items.rigatoni"), price: "€14,00" },
-      { name: t("menu.items.gnocchi"), price: "€14,00" },
-      { name: t("menu.items.tagliolino"), price: "€14,00" },
-    ],
-    secondi: [
-      { name: t("menu.items.cervo"), price: "€16,00" },
-      { name: t("menu.items.frico"), price: "€15,00" },
-      { name: t("menu.items.filetto"), price: "€30,00" },
-      { name: t("menu.items.ribs"), price: "€19,00" },
-    ],
-    contorni: [
-      { name: t("menu.items.patate"), price: "€5,00" },
-      { name: t("menu.items.funghi"), price: "€6,00" },
-      { name: t("menu.items.spinaci"), price: "€5,00" },
-      { name: t("menu.items.insalata"), price: "€7,00" },
-    ],
-    bevande: [
-      { name: t("menu.items.spritz_aperol"), price: "€4,00" },
-      { name: t("menu.items.spritz_campari"), price: "€4,50" },
-      { name: t("menu.items.birra_egg"), price: "€3,00" },
-      { name: t("menu.items.birra_men"), price: "€6,00" },
-    ],
-  }
-
-  const foodImages = [
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb702885b88e1d0c3a6_menu%CC%80_busa-089.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb7a79fd48a8f930cb3_menu%CC%80_busa-039.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb851fb04d42c7318a4_menu%CC%80_busa-014.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb820a110075b063a7b_menu%CC%80_busa-063.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb9f7c763c60cca2c61_menu%CC%80_busa-138.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb90555aeb9253567ee_menu%CC%80_busa-199.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb9c67818c7beaf240e_menu%CC%80_busa-166.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb9938d0e62b680b4fc_menu%CC%80_busa-129.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb9a35264ecb8a55616_busa_interno_vini.jpg",
-  ]
-
-  const interiorImages = [
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb83da47a9b8bc470d7_ambiente_busa_interno_1.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb863459893cd156685_ambiente_busa_interno_2.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcbabd248ce579d994ce_busa_interno_vini.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb819fd354695ec0384_ambiente_busa_esterno.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb843491d0fbd97fd95_menu%CC%80_busa-075.jpg",
-  ]
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Completely hide all slideshow indicators on mobile */}
-      <style jsx global>{`
-        @media (max-width: 768px) {
-          .hero-slideshow-indicators,
-          .slideshow-dots,
-          .slideshow-indicators,
-          .swiper-pagination,
-          .swiper-pagination-bullet,
-          [class*="indicator"],
-          [class*="dot"],
-          [class*="pagination"],
-          [class*="bullet"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            height: 0 !important;
-            width: 0 !important;
-            overflow: hidden !important;
-          }
-        }
-        @media (max-width: 420px) {
-          .hero-content .professional-container {
-            padding: 6px !important;
-          }
-        }
-      `}</style>
-
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-morphism border-b border-white/10">
+    <div className="min-h-screen" style={{ background: "var(--bg)", color: "var(--text)" }}>
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 glass-morphism border-b"
+        style={{ borderColor: "var(--border)" }}
+        role="navigation"
+        aria-label="Main navigation"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3">
           <div className="flex justify-between items-center">
-            {/* Logo */}
-            <motion.img
-              src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1d87e5d2e62b54c46ec1c_busa_del_sauc.png"
-              alt="La Busa del Sauc"
-              className={`h-12 sm:h-10 md:h-12 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-0"}`}
-              whileHover={{ scale: 1.05 }}
-            />
+            <motion.div className="flex items-center">
+              <img
+                src="/brand/broker-motors-logo.png"
+                alt="Broker Motors - Luxury Car Auctions"
+                className="h-12 sm:h-10 md:h-12 w-auto"
+                onError={(e) => {
+                  // Fallback to text logo
+                  e.currentTarget.style.display = "none"
+                  e.currentTarget.nextElementSibling.style.display = "block"
+                }}
+              />
+              <span className="text-xl font-bold hidden" style={{ color: "var(--accent)" }}>
+                BROKER MOTORS
+              </span>
+            </motion.div>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex space-x-6 xl:space-x-8">
+            <div className="hidden lg:flex space-x-6 xl:space-x-8" role="menubar">
               {navigationItems.map((item) => (
                 <motion.button
                   key={item.key}
                   onClick={() => scrollToSection(item.key)}
                   className={`font-inter text-sm font-medium transition-all duration-300 relative px-3 py-2 rounded-lg ${
-                    activeSection === item.key
-                      ? theme === "dark"
-                        ? "text-[#ff0092] font-semibold bg-[#ff0092]/20"
-                        : "text-amber-600 font-semibold bg-amber-400/20"
-                      : theme === "dark"
-                        ? "text-white hover:text-[#ff0092] hover:bg-white/10"
-                        : "text-slate-800 hover:text-amber-600 hover:bg-slate-100"
+                    activeSection === item.key ? "font-semibold" : "hover:opacity-80"
                   }`}
+                  style={{
+                    color: activeSection === item.key ? "var(--accent)" : "var(--text)",
+                    backgroundColor: activeSection === item.key ? "var(--accent)20" : "transparent",
+                  }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  role="menuitem"
+                  aria-current={activeSection === item.key ? "page" : undefined}
                 >
                   {item.label}
                 </motion.button>
@@ -185,9 +330,15 @@ function RestaurantContent() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={`h-12 w-12 sm:h-10 sm:w-10 p-0 hover:bg-white/10 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                className="h-12 w-12 sm:h-10 sm:w-10 p-0 hover:bg-white/10"
+                style={{ color: "var(--text)" }}
+                aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
               >
-                {theme === "dark" ? <Sun className="h-8 w-8 sm:h-4 sm:w-4" /> : <Moon className="h-8 w-8 sm:h-4 sm:w-4" />}
+                {theme === "dark" ? (
+                  <Sun className="h-8 w-8 sm:h-4 sm:w-4" />
+                ) : (
+                  <Moon className="h-8 w-8 sm:h-4 sm:w-4" />
+                )}
               </Button>
 
               {/* Language Selector */}
@@ -196,7 +347,11 @@ function RestaurantContent() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                  className={`hover:bg-white/10 px-4 sm:px-3 py-3 sm:py-2 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                  className="hover:bg-white/10 px-4 sm:px-3 py-3 sm:py-2"
+                  style={{ color: "var(--text)" }}
+                  aria-label="Select language"
+                  aria-expanded={showLanguageDropdown}
+                  aria-haspopup="true"
                 >
                   <Globe className="h-8 w-8 sm:h-4 sm:w-4 mr-2 sm:mr-2" />
                   <span className="text-base sm:text-sm font-medium">
@@ -209,8 +364,10 @@ function RestaurantContent() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="absolute top-full mt-2 right-0 min-w-[120px] sm:min-w-[150px]"
+                    role="menu"
+                    aria-label="Language options"
                   >
-                    <div className="professional-container p-2 space-y-1">
+                    <div className="card p-2 space-y-1">
                       {Object.entries(languages).map(([code, lang]) => (
                         <button
                           key={code}
@@ -218,7 +375,9 @@ function RestaurantContent() {
                             setLanguage(code as keyof typeof languages)
                             setShowLanguageDropdown(false)
                           }}
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-amber-400/20 rounded-lg transition-colors flex items-center space-x-2"
+                          className="w-full text-left px-3 py-2 text-sm hover:opacity-80 rounded-lg transition-colors flex items-center space-x-2"
+                          style={{ color: "var(--text)" }}
+                          role="menuitem"
                         >
                           <span>{lang.flag}</span>
                           <span>{lang.name}</span>
@@ -228,121 +387,113 @@ function RestaurantContent() {
                   </motion.div>
                 )}
               </div>
+
+              <Button
+                className="btn--primary hidden sm:flex px-4 py-2 rounded-lg font-medium"
+                onClick={() => scrollToSection("contact")}
+              >
+                {t("nav.register")}
+              </Button>
             </div>
           </div>
         </div>
-
-        {/* Mobile Menu Overlay - RIMOSSO */}
       </nav>
 
-      {/* Hero Section - Ultra Compact Version */}
       <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-        <HeroSlideshow />
+        {/* Video Background */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/media/hero-poster.jpg"
+          aria-label="Luxury cars in showroom background video"
+        >
+          <source src="/media/hero.webm" type="video/webm" />
+          <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/brokerautomotive2-HXFq89EaeL3Okl2DBwRyej9IfCLoWp.mp4" type="video/mp4" />
+        </video>
 
+        {/* Video Overlay */}
+        <div className="absolute inset-0 bg-black/50 z-10"></div>
+
+        {/* Hero Content */}
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4 pt-24 z-20">
-          
-          {/* Benvenuti Badge */}
+          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, delay: 0.3 }}
-            className="mb-4"
+            className="mb-6"
           >
-            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-3 py-2 mb-6 inline-block">
-              <p className={`text-sm font-light uppercase tracking-widest ${
-                theme === "dark" ? "text-[#ff0092]" : "text-amber-400"
-              }`}>
-                {t("hero.welcome")}
-              </p>
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-4 py-2 inline-block">
+              <p className="text-sm font-light uppercase tracking-widest text-blue-400">{t("hero.badge")}</p>
             </div>
-            
-            <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold text-white mb-6 leading-tight">
-              La Busa del Sauc
-            </h1>
           </motion.div>
 
-          {/* Descrizione */}
+          {/* Main Title */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="mb-8"
+            className="mb-6"
           >
-            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-6 py-4 max-w-2xl mx-auto">
-              <p className="text-base sm:text-lg font-light leading-relaxed">
-                {t("hero.subtitle")}
-              </p>
-            </div>
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-4 leading-tight">
+              {t("hero.title")}
+            </h1>
           </motion.div>
 
-          {/* Pulsanti */}
+          {/* Subtitle */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.9 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl"
+            transition={{ duration: 1, delay: 0.8 }}
+            className="mb-8"
+          >
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-6 py-4 max-w-3xl mx-auto">
+              <p className="text-lg sm:text-xl md:text-2xl font-light leading-relaxed">{t("hero.subtitle")}</p>
+            </div>
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.0 }}
+            className="flex flex-col sm:flex-row gap-4 w-full max-w-2xl"
           >
             <Button
               size="lg"
-              className={`h-12 text-black font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg ${
-                theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-600"
-              }`}
-              onClick={() =>
-                window.open(
-                  "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
-                  "_blank",
-                )
-              }
+              className="btn--primary h-14 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg flex-1"
             >
-              <ExternalLink className="mr-2 h-5 w-5" />
-              {t("menu")}
+              <Gavel className="mr-2 h-5 w-5" />
+              {t("hero.ctaBid")}
             </Button>
 
             <Button
               variant="outline"
               size="lg"
-              className="h-12 border-white/30 text-white hover:bg-white/10 rounded-xl transition-all duration-300 hover:scale-105 bg-transparent backdrop-blur-sm"
-              onClick={() => scrollToSection("about")}
+              className="h-14 text-lg border-white/30 text-white hover:bg-white/10 rounded-xl transition-all duration-300 hover:scale-105 bg-transparent backdrop-blur-sm flex-1"
+              onClick={() => scrollToSection("sell")}
             >
-              {t("hero.discover")}
+              <Car className="mr-2 h-5 w-5" />
+              {t("hero.ctaSell")}
             </Button>
-
-            <a
-              href="https://www.wearerighello.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 h-12 px-4"
-            >
-              <img
-                src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/6814c5b54bc85218c633c5a8_Righello_logo_E.png"
-                alt="Righello Icon"
-                className={`w-5 h-5 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
-              />
-              <div className="flex flex-col items-start">
-                <span className="text-xs uppercase tracking-wider opacity-80 font-medium">
-                  Partner of
-                </span>
-                <img
-                  src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/65774a509c1f2e0f55137c8e_Logo_righello.svg"
-                  alt="Righello"
-                  className={`h-3 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
-                />
-              </div>
-            </a>
           </motion.div>
         </div>
 
+        {/* Scroll Indicator */}
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-          className="absolute bottom-3 sm:bottom-6 left-1/2 transform -translate-x-1/2 text-white z-[5]"
+          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white z-20"
+          aria-label="Scroll down for more content"
         >
-          <ChevronDown size={22} />
+          <ChevronDown size={24} />
         </motion.div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="py-16 sm:py-24 lg:py-32 bg-muted">
+      <section id="lots" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -351,89 +502,448 @@ function RestaurantContent() {
             viewport={{ once: true }}
             className="text-center mb-12 sm:mb-16 lg:mb-20"
           >
-            <h2 className="font-inter text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
-              {t("about.title")}
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              {t("lots.title")}
             </h2>
             <div className="max-w-4xl mx-auto">
-              <p className="font-inter text-lg sm:text-xl md:text-2xl leading-relaxed text-muted-foreground">
-                {t("about.description")}
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed" style={{ color: "var(--muted)" }}>
+                {t("lots.description")}
               </p>
             </div>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="space-y-6 sm:space-y-8"
-            >
-              <div className="professional-container p-6 sm:p-8 lg:p-10 professional-hover">
-                <h3
-                  className={`font-inter text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 ${
-                    theme === "dark" ? "text-[#ff0092]" : "text-amber-500"
-                  }`}
-                >
-                  {t("atmosphere.title")}
-                </h3>
-                <div className="mb-6 sm:mb-8">
-                  <Button
-                    size="lg"
-                    className={`w-full sm:w-auto text-black font-semibold px-6 sm:px-8 py-3 text-base rounded-xl transition-all duration-300 hover:scale-105 shadow-lg ${
-                      theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-500"
-                    }`}
-                    onClick={() =>
-                      window.open(
-                        "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
-                        "_blank",
-                      )
-                    }
+          {/* Car Lots Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {featuredLots.map((lot, index) => (
+              <motion.div
+                key={lot.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="card rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                itemScope
+                itemType="https://schema.org/Vehicle"
+              >
+                {/* Car Image */}
+                <div className="relative overflow-hidden">
+                  <img
+                    src={lot.image || "/placeholder.svg"}
+                    alt={`${lot.title} ${lot.year}`}
+                    className="w-full h-48 sm:h-56 object-cover transition-transform duration-300 hover:scale-105"
+                    itemProp="image"
+                  />
+
+                  {/* Status Badge */}
+                  <div className="absolute top-3 left-3">
+                    <span className={getStatusBadge(lot.status)}>{lot.status}</span>
+                  </div>
+
+                  {/* Reserve Badge */}
+                  {lot.reserve && (
+                    <div className="absolute top-3 right-3">
+                      <span className="px-2 py-1 text-xs font-medium rounded-md bg-black/70 text-white backdrop-blur-sm">
+                        {t("lots.reserve")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Content */}
+                <div className="p-4 sm:p-6">
+                  {/* Car Title */}
+                  <h3
+                    className="text-lg sm:text-xl font-bold mb-2 leading-tight"
+                    style={{ color: "var(--text)" }}
+                    itemProp="name"
                   >
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    {t("menu")}
+                    {lot.title} ({lot.year})
+                  </h3>
+
+                  {/* Car Details */}
+                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" style={{ color: "var(--accent)" }} />
+                      <span style={{ color: "var(--muted)" }}>
+                        {lot.mileage.toLocaleString()} {t("lots.mileage")}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-4 h-4 rounded-full border-2"
+                        style={{
+                          backgroundColor: lot.color.toLowerCase().includes("blue")
+                            ? "#0066cc"
+                            : lot.color.toLowerCase().includes("green")
+                              ? "#00cc66"
+                              : lot.color.toLowerCase().includes("black")
+                                ? "#333333"
+                                : "#cccccc",
+                        }}
+                      />
+                      <span style={{ color: "var(--muted)" }}>{lot.color}</span>
+                    </div>
+                  </div>
+
+                  {/* Current Bid */}
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium" style={{ color: "var(--muted)" }}>
+                        Current Bid
+                      </span>
+                      <span className="text-lg font-bold" style={{ color: "var(--accent)" }}>
+                        {lot.currentBid}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Countdown Timer */}
+                  <div
+                    className="flex items-center justify-between mb-4 p-3 rounded-lg"
+                    style={{ backgroundColor: "var(--card)" }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" style={{ color: "var(--accent)" }} />
+                      <span className="text-sm font-medium" style={{ color: "var(--text)" }}>
+                        {t("lots.endsIn")}
+                      </span>
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: "var(--accent)" }}>
+                      {getTimeRemaining(lot.endsAt)}
+                    </span>
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button
+                    className="w-full btn--primary rounded-lg font-medium transition-all duration-300 hover:scale-105"
+                    onClick={() => {
+                      // Placeholder for lot detail navigation
+                      console.log(`Opening lot: ${lot.id}`)
+                    }}
+                  >
+                    <Eye className="mr-2 h-4 w-4" />
+                    {t("lots.viewLot")}
                   </Button>
                 </div>
-                <div className="space-y-6 sm:space-y-8">
-                  <div
-                    className={`professional-container p-6 sm:p-8 border-l-4 ${theme === "dark" ? "border-[#ff0092]" : "border-amber-400"}`}
+
+                {/* Schema.org structured data */}
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "Vehicle",
+                      name: `${lot.title} (${lot.year})`,
+                      brand: lot.title.split(" ")[0],
+                      model: lot.title.split(" ").slice(1).join(" "),
+                      vehicleModelDate: lot.year.toString(),
+                      mileageFromOdometer: {
+                        "@type": "QuantitativeValue",
+                        value: lot.mileage,
+                        unitCode: "KMT",
+                      },
+                      color: lot.color,
+                      offers: {
+                        "@type": "Offer",
+                        priceCurrency: "GBP",
+                        price: lot.currentBid.replace(/[£,]/g, ""),
+                        availability: "https://schema.org/InStock",
+                      },
+                      image: [lot.image],
+                      url: `https://brokermotors.example/lot/${lot.id}`,
+                    }),
+                  }}
+                />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* View All Lots CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="text-center mt-12 sm:mt-16"
+          >
+            <Button
+              size="lg"
+              variant="outline"
+              className="px-8 py-3 text-lg rounded-xl transition-all duration-300 hover:scale-105 bg-transparent"
+              style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+            >
+              View All Auctions
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* USP Cards Grid */}
+      <section id="usp" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--card)" }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16 lg:mb-20"
+          >
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              {t("usp.title")}
+            </h2>
+          </motion.div>
+
+          {/* USP Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {Array.isArray(t("usp.items")) &&
+              t("usp.items").map((item: any, index: number) => {
+                const icons = [Award, FileText, Shield, Truck]
+                const IconComponent = icons[index]
+
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="card p-6 sm:p-8 text-center hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
                   >
-                    <p className="font-inter text-base sm:text-lg leading-relaxed">{t("atmosphere.description1")}</p>
-                  </div>
-                  <div
-                    className={`professional-container p-6 sm:p-8 border-l-4 ${theme === "dark" ? "border-[#ff0092]" : "border-amber-400"}`}
+                    <div className="flex justify-center mb-6">
+                      <div
+                        className="w-16 h-16 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: "var(--accent)", opacity: 0.1 }}
+                      >
+                        <IconComponent className="w-8 h-8" style={{ color: "var(--accent)" }} />
+                      </div>
+                    </div>
+
+                    <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
+                      {item.t}
+                    </h3>
+
+                    <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
+                      {item.d}
+                    </p>
+                  </motion.div>
+                )
+              })}
+          </div>
+        </div>
+      </section>
+
+      {/* How it Works Steps */}
+      <section id="how" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16 lg:mb-20"
+          >
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              {t("how.title")}
+            </h2>
+          </motion.div>
+
+          {/* How it Works Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 relative">
+            {Array.isArray(t("how.steps")) &&
+              t("how.steps").map((step: any, index: number) => {
+                const icons = [Users, Shield, Gavel, Truck]
+                const IconComponent = icons[index]
+
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="relative"
                   >
-                    <p className="font-inter text-base sm:text-lg leading-relaxed">{t("atmosphere.description2")}</p>
-                  </div>
+                    <div className="card p-6 sm:p-8 text-center hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                      {/* Step Number */}
+                      <div
+                        className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
+                        style={{ backgroundColor: "var(--accent)" }}
+                      >
+                        {index + 1}
+                      </div>
+
+                      <div className="flex justify-center mb-6 mt-4">
+                        <div
+                          className="w-16 h-16 rounded-full flex items-center justify-center"
+                          style={{ backgroundColor: "var(--accent)", opacity: 0.1 }}
+                        >
+                          <IconComponent className="w-8 h-8" style={{ color: "var(--accent)" }} />
+                        </div>
+                      </div>
+
+                      <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
+                        {step.t}
+                      </h3>
+
+                      <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
+                        {step.d}
+                      </p>
+                    </div>
+
+                    {/* Arrow connector (except for last item) */}
+                    {index < 3 && (
+                      <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2">
+                        <ArrowRight className="w-6 h-6" style={{ color: "var(--accent)" }} />
+                      </div>
+                    )}
+                  </motion.div>
+                )
+              })}
+          </div>
+
+          {/* CTA for Guide */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <Button
+              size="lg"
+              variant="outline"
+              className="px-8 py-3 text-lg rounded-xl transition-all duration-300 hover:scale-105 bg-transparent"
+              style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+            >
+              <BookOpen className="mr-2 h-5 w-5" />
+              {t("how.guide")}
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Guarantees & Inspections */}
+      <section className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--card)" }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16 lg:mb-20"
+          >
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              {t("guarantees.title")}
+            </h2>
+            <div className="max-w-4xl mx-auto">
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed" style={{ color: "var(--muted)" }}>
+                {t("guarantees.description")}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Guarantees Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="card p-6 sm:p-8 text-center hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="flex justify-center mb-6">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "var(--accent)", opacity: 0.1 }}
+                >
+                  <FileText className="w-8 h-8" style={{ color: "var(--accent)" }} />
                 </div>
               </div>
+
+              <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
+                {t("guarantees.inspection")}
+              </h3>
+
+              <p className="text-base leading-relaxed mb-6" style={{ color: "var(--muted)" }}>
+                Comprehensive 200+ point inspection with detailed photography and documentation.
+              </p>
+
+              <Button
+                variant="outline"
+                className="w-full rounded-lg transition-all duration-300 hover:scale-105 bg-transparent"
+                style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+              >
+                {t("guarantees.viewReport")}
+              </Button>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="grid grid-cols-2 gap-4 sm:gap-6"
+              className="card p-6 sm:p-8 text-center hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
-              {interiorImages.map((image, index) => (
-                <motion.div key={index} whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}>
-                  <div className="professional-container overflow-hidden p-0 professional-hover">
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`Interior ${index + 1}`}
-                      className="w-full h-40 sm:h-48 lg:h-56 object-cover"
-                    />
-                  </div>
-                </motion.div>
-              ))}
+              <div className="flex justify-center mb-6">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "var(--accent)", opacity: 0.1 }}
+                >
+                  <Shield className="w-8 h-8" style={{ color: "var(--accent)" }} />
+                </div>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
+                {t("guarantees.escrow")}
+              </h3>
+
+              <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
+                Secure payment processing with full KYC/AML compliance and buyer protection.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="card p-6 sm:p-8 text-center hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="flex justify-center mb-6">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "var(--accent)", opacity: 0.1 }}
+                >
+                  <Truck className="w-8 h-8" style={{ color: "var(--accent)" }} />
+                </div>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
+                {t("guarantees.transport")}
+              </h3>
+
+              <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
+                Professional enclosed transport with full insurance coverage across UK and EU.
+              </p>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Menu Section */}
-      <section id="menu" className="py-16 sm:py-24 lg:py-32 bg-background">
+      {/* Insights & News */}
+      <section className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -442,354 +952,604 @@ function RestaurantContent() {
             viewport={{ once: true }}
             className="text-center mb-12 sm:mb-16 lg:mb-20"
           >
-            <h2 className="font-inter text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
-              {t("menu.title")}
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              {t("insights.title")}
             </h2>
-            <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
-              <p className="font-inter text-lg sm:text-xl md:text-2xl leading-relaxed text-muted-foreground">
-                {t("menu.description")}
+            <div className="max-w-4xl mx-auto">
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed" style={{ color: "var(--muted)" }}>
+                {t("insights.description")}
               </p>
             </div>
-            <Button
-              size="lg"
-              className={`text-black font-semibold px-6 sm:px-8 lg:px-10 py-3 sm:py-4 text-base rounded-xl transition-all duration-300 hover:scale-105 shadow-lg h-12 sm:h-14 lg:h-16 min-w-[180px] sm:min-w-[200px] ${
-                theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-500"
-              }`}
-              onClick={() =>
-                window.open(
-                  "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
-                  "_blank",
-                )
-              }
-            >
-              <ExternalLink className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              {t("menu")}
-            </Button>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-8 sm:gap-10">
-            {Object.entries(menuItems).map(([category, items], categoryIndex) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: categoryIndex * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="professional-container p-6 sm:p-8 lg:p-10 professional-hover h-full">
-                  <h3
-                    className={`font-inter text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 ${
-                      theme === "dark" ? "text-[#ff0092]" : "text-amber-500"
-                    }`}
-                  >
-                    {t(`menu.${category}` as any)}
-                  </h3>
-                  <div className="space-y-4 sm:space-y-6">
-                    {items.map((item, index) => (
+          {/* Insights Articles */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="card overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <img
+                src="/placeholder.svg?height=200&width=400&text=Porsche+911+Market+Analysis"
+                alt="Porsche 911 Market Analysis"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--text)" }}>
+                  Porsche 911 Market Trends 2025
+                </h3>
+                <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
+                  Analysis of current market values and investment potential for classic and modern 911 variants.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-lg transition-all duration-300 hover:scale-105 bg-transparent"
+                  style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+                >
+                  Read More
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="card overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <img
+                src="/placeholder.svg?height=200&width=400&text=Auction+Bidding+Guide"
+                alt="Auction Bidding Guide"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--text)" }}>
+                  First-Time Bidder's Guide
+                </h3>
+                <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
+                  Essential checklist and strategies for successful luxury car auction participation.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-lg transition-all duration-300 hover:scale-105 bg-transparent"
+                  style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+                >
+                  Read More
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="card overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <img
+                src="/placeholder.svg?height=200&width=400&text=Import+Tax+Guide"
+                alt="Import Tax Guide"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--text)" }}>
+                  UK/EU Import & Tax Guide
+                </h3>
+                <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
+                  Complete guide to import duties, VAT, and registration requirements for luxury vehicles.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-lg transition-all duration-300 hover:scale-105 bg-transparent"
+                  style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+                >
+                  Read More
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sell" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--card)" }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16 lg:mb-20"
+          >
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              {t("sell.title")}
+            </h2>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+            {/* Left Column - Benefits */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <div className="mb-8">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-6" style={{ color: "var(--text)" }}>
+                  Why sell with Broker Motors?
+                </h3>
+
+                <div className="space-y-4">
+                  {Array.isArray(t("sell.bullets")) &&
+                    t("sell.bullets").map((bullet: string, index: number) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         viewport={{ once: true }}
+                        className="flex items-center gap-3"
                       >
-                        <article className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 md:p-5">
-                          <header className="mb-2 flex items-start justify-between gap-3">
-                            <h4 className="text-sm sm:text-base md:text-lg font-medium leading-tight">{item.name}</h4>
-                            <span className="shrink-0 rounded-xl border border-white/10 bg-black/30 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
-                              {item.price}
-                            </span>
-                          </header>
-                        </article>
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: "var(--accent)" }}
+                        >
+                          <CheckCircle className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="text-lg" style={{ color: "var(--text)" }}>
+                          {bullet}
+                        </span>
                       </motion.div>
                     ))}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Gallery Section */}
-      <section id="gallery" className="py-16 sm:py-24 lg:py-32 bg-muted">
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12 sm:mb-16 lg:mb-20"
-          >
-            <h2 className="font-inter text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
-              {t("gallery.title")}
-            </h2>
-            <div className="max-w-3xl mx-auto">
-              <p className="font-inter text-lg sm:text-xl md:text-2xl leading-relaxed text-muted-foreground">
-                {t("gallery.description")}
-              </p>
-            </div>
-          </motion.div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-            {foodImages.map((image, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.03 }}
-              >
-                <div className="professional-container overflow-hidden p-0 professional-hover">
-                  <img
-                    src={image || "/placeholder.svg"}
-                    alt={`Food ${index + 1}`}
-                    className="w-full h-40 sm:h-48 lg:h-56 object-cover"
-                  />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-16 sm:py-24 lg:py-32 bg-background">
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12 sm:mb-16 lg:mb-20"
-          >
-            <h2 className="font-inter text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6">
-              {t("contact.title")}
-            </h2>
-            <div className="max-w-3xl mx-auto">
-              <p className="font-inter text-lg sm:text-xl md:text-2xl leading-relaxed text-muted-foreground">
-                {t("contact.description")}
-              </p>
-            </div>
-          </motion.div>
-
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="grid lg:grid-cols-3 gap-8 sm:gap-10"
-            >
-              <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-                <div className="professional-container p-6 sm:p-8 lg:p-10">
-                  <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
-                    {/* Address Card */}
-                    <section className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span
-                          className={`inline-flex h-8 w-8 items-center justify-center rounded-full border ${theme === "dark" ? "border-[#ff0092]/50 bg-[#ff0092]/10" : "border-amber-500/50 bg-amber-500/10"}`}
-                        >
-                          <MapPin className={`h-4 w-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`} />
-                        </span>
-                        <h3
-                          className={`${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"} font-semibold text-lg`}
-                        >
-                          {t("contact.address")}
-                        </h3>
-                      </div>
-                      <div className="space-y-3 text-sm leading-relaxed">
-                        <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">Piazzale della Puppa</span>
-                          <br />
-                          <span className="font-medium">33081 Piancavallo PN</span>
-                        </p>
-                      </div>
-                    </section>
-
-                    {/* Hours Card */}
-                    <section className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span
-                          className={`inline-flex h-8 w-8 items-center justify-center rounded-full border ${theme === "dark" ? "border-[#ff0092]/50 bg-[#ff0092]/10" : "border-amber-500/50 bg-amber-500/10"}`}
-                        >
-                          <Clock className={`h-4 w-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`} />
-                        </span>
-                        <h3
-                          className={`${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"} font-semibold text-lg`}
-                        >
-                          {t("contact.hours")}
-                        </h3>
-                      </div>
-                      <div className="space-y-3 text-sm leading-relaxed">
-                        <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">Venerdì–Domenica:</span> {t("hours.weekend")}
-                        </p>
-                        <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">Lunedì–Giovedì:</span> {t("hours.weekdays")}
-                        </p>
-                      </div>
-                    </section>
-
-                    {/* Phone Card */}
-                    <section className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span
-                          className={`inline-flex h-8 w-8 items-center justify-center rounded-full border ${theme === "dark" ? "border-[#ff0092]/50 bg-[#ff0092]/10" : "border-amber-500/50 bg-amber-500/10"}`}
-                        >
-                          <Phone className={`h-4 w-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`} />
-                        </span>
-                        <h3
-                          className={`${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"} font-semibold text-lg`}
-                        >
-                          {t("contact.phone")}
-                        </h3>
-                      </div>
-                      <div className="space-y-3 text-sm leading-relaxed">
-                        <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">389 443 0724</span>
-                          <br />
-                          <span className="text-xs opacity-80">{t("whatsapp.info")}</span>
-                        </p>
-                      </div>
-                    </section>
-
-                    {/* Social Media Card */}
-                    <section className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span
-                          className={`inline-flex h-8 w-8 items-center justify-center rounded-full border ${theme === "dark" ? "border-[#ff0092]/50 bg-[#ff0092]/10" : "border-amber-500/50 bg-amber-500/10"}`}
-                        >
-                          <Instagram className={`h-4 w-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`} />
-                        </span>
-                        <h3
-                          className={`${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"} font-semibold text-lg`}
-                        >
-                          {t("contact.follow")}
-                        </h3>
-                      </div>
-                      <div className="flex space-x-4">
-                        <Button
-                          size="lg"
-                          className={`text-black transition-all duration-300 hover:scale-105 p-3 sm:p-4 ${theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-500"}`}
-                          onClick={() => window.open("https://www.instagram.com/busa_del_sauc/", "_blank")}
-                        >
-                          <Instagram size={20} className="sm:w-6 sm:h-6" />
-                        </Button>
-                        <Button
-                          size="lg"
-                          className={`text-black transition-all duration-300 hover:scale-105 p-3 sm:p-4 ${theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-500"}`}
-                          onClick={() => window.open("https://www.facebook.com/baitacaprioli/?locale=it_IT", "_blank")}
-                        >
-                          <Facebook size={20} className="sm:w-6 sm:h-6" />
-                        </Button>
-                      </div>
-                    </section>
-                  </div>
                 </div>
               </div>
 
-              <div className="space-y-6 sm:space-y-8">
-                <div className="professional-container p-6 sm:p-8 lg:p-10 text-center">
-                  <h3
-                    className={`font-inter text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 ${
-                      theme === "dark" ? "text-white" : "text-slate-900"
-                    }`}
-                  >
-                    {t("contact.priceRange")}
-                  </h3>
-                  <div
-                    className={`professional-container p-6 sm:p-8 mb-4 sm:mb-6 border-l-4 ${theme === "dark" ? "border-[#ff0092]" : "border-amber-400"}`}
-                  >
-                    <p
-                      className={`font-inter text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 ${theme === "dark" ? "text-white" : "text-slate-900"}`}
+              {/* Process Steps */}
+              <div className="card p-6 sm:p-8">
+                <h4 className="text-xl font-bold mb-4" style={{ color: "var(--text)" }}>
+                  Simple 3-Step Process
+                </h4>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                      style={{ backgroundColor: "var(--accent)" }}
                     >
-                      media 25€
-                    </p>
-                    <p className="font-inter text-base sm:text-lg opacity-80">{t("contact.perPerson")}</p>
+                      1
+                    </div>
+                    <div>
+                      <p className="font-medium" style={{ color: "var(--text)" }}>
+                        Submit Details
+                      </p>
+                      <p className="text-sm" style={{ color: "var(--muted)" }}>
+                        Complete the form with your vehicle information
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                      style={{ backgroundColor: "var(--accent)" }}
+                    >
+                      2
+                    </div>
+                    <div>
+                      <p className="font-medium" style={{ color: "var(--text)" }}>
+                        Professional Assessment
+                      </p>
+                      <p className="text-sm" style={{ color: "var(--muted)" }}>
+                        Our experts evaluate and photograph your vehicle
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                      style={{ backgroundColor: "var(--accent)" }}
+                    >
+                      3
+                    </div>
+                    <div>
+                      <p className="font-medium" style={{ color: "var(--text)" }}>
+                        Go Live
+                      </p>
+                      <p className="text-sm" style={{ color: "var(--muted)" }}>
+                        Your vehicle goes to auction with global reach
+                      </p>
+                    </div>
                   </div>
                 </div>
+              </div>
+            </motion.div>
 
-                <div className="professional-container p-6 sm:p-8 lg:p-10">
-                  <div className="professional-container p-6 sm:p-8">
-                    <p className="font-inter text-sm sm:text-base leading-relaxed text-center">
-                      {t("contact.reservationInfo")}
-                    </p>
+            {/* Right Column - Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <div className="card p-6 sm:p-8">
+                <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text)" }}>
+                  Get Your Free Valuation
+                </h3>
+
+                <form onSubmit={handleFormSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                        {t("sell.form.name")} *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                        className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors"
+                        style={{
+                          backgroundColor: "var(--bg)",
+                          borderColor: "var(--border)",
+                          color: "var(--text)",
+                          focusRingColor: "var(--accent)",
+                        }}
+                        placeholder="Your full name"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                        {t("sell.form.email")} *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors"
+                        style={{
+                          backgroundColor: "var(--bg)",
+                          borderColor: "var(--border)",
+                          color: "var(--text)",
+                        }}
+                        placeholder="your@email.com"
+                      />
+                    </div>
                   </div>
-                </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                      {t("sell.form.phone")} *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors"
+                      style={{
+                        backgroundColor: "var(--bg)",
+                        borderColor: "var(--border)",
+                        color: "var(--text)",
+                      }}
+                      placeholder="+44 7XXX XXXXXX"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                      {t("sell.form.car")} *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.car}
+                      onChange={(e) => handleInputChange("car", e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors"
+                      style={{
+                        backgroundColor: "var(--bg)",
+                        borderColor: "var(--border)",
+                        color: "var(--text)",
+                      }}
+                      placeholder="e.g. Porsche 911 Carrera S 2020"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                      {t("sell.form.km")} *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.mileage}
+                      onChange={(e) => handleInputChange("mileage", e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors"
+                      style={{
+                        backgroundColor: "var(--bg)",
+                        borderColor: "var(--border)",
+                        color: "var(--text)",
+                      }}
+                      placeholder="e.g. 25,000 km"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                      {t("sell.form.media")}
+                    </label>
+                    <input
+                      type="url"
+                      value={formData.media}
+                      onChange={(e) => handleInputChange("media", e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors"
+                      style={{
+                        backgroundColor: "var(--bg)",
+                        borderColor: "var(--border)",
+                        color: "var(--text)",
+                      }}
+                      placeholder="Link to photos or videos (optional)"
+                    />
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="privacy"
+                      checked={formData.privacy}
+                      onChange={(e) => handleInputChange("privacy", e.target.checked)}
+                      className="mt-1"
+                      style={{ accentColor: "var(--accent)" }}
+                    />
+                    <label htmlFor="privacy" className="text-sm" style={{ color: "var(--muted)" }}>
+                      {t("sell.form.privacy")} and agree to be contacted regarding my vehicle valuation.
+                    </label>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full btn--primary py-4 text-lg font-semibold rounded-lg transition-all duration-300 hover:scale-105"
+                  >
+                    {t("sell.form.submit")}
+                  </Button>
+                </form>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="contact" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16 lg:mb-20"
+          >
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              {t("faq.title")}
+            </h2>
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto space-y-4">
+            {faqItems.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="card overflow-hidden"
+              >
+                <button
+                  className="w-full px-6 py-4 text-left font-semibold flex justify-between items-center hover:opacity-80 transition-colors"
+                  style={{ color: "var(--text)" }}
+                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                >
+                  {faq.question}
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform ${openFaqIndex === index ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {openFaqIndex === index && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="px-6 py-4 border-t"
+                    style={{ borderColor: "var(--border)" }}
+                  >
+                    <p style={{ color: "var(--muted)" }}>{faq.answer}</p>
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section
+        className="py-16 sm:py-24 lg:py-32"
+        style={{ background: "var(--accent)", color: "var(--accent-contrast)" }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">{t("ctaFinal.title")}</h2>
+            <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
+              Join thousands of collectors and enthusiasts who have chosen Broker Motors for their dream cars.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto">
+              <Button
+                size="lg"
+                className="text-lg px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+                style={{ backgroundColor: "var(--accent-contrast)", color: "var(--accent)" }}
+              >
+                {t("ctaFinal.cta1")}
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 bg-transparent"
+                style={{ borderColor: "var(--accent-contrast)", color: "var(--accent-contrast)" }}
+              >
+                {t("ctaFinal.cta2")}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="text-white py-8 sm:py-12 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
-            <div className="sm:col-span-2 md:col-span-1">
-              <motion.img
-                src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1d87e5d2e62b54c46ec1c_busa_del_sauc.png"
-                alt="La Busa del Sauc"
-                className="h-12 sm:h-16 w-auto brightness-0 invert mb-4"
-              />
-              <p className="text-slate-400 text-sm sm:text-base">{t("footer.tagline")}</p>
+      <footer className="py-16" style={{ background: "var(--card)", borderTop: "1px solid var(--border)" }}>
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            {/* Brand */}
+            <div className="md:col-span-2">
+              <div className="flex items-center mb-6">
+                <img
+                  src="/brand/broker-motors-big.png"
+                  alt="Broker Motors"
+                  className="h-16 w-auto"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.style.display = "none"
+                    const fallback = target.nextElementSibling as HTMLElement
+                    if (fallback) fallback.style.display = "block"
+                  }}
+                />
+                <div className="hidden text-2xl font-bold" style={{ color: "var(--accent)" }}>
+                  BROKER MOTORS
+                </div>
+              </div>
+              <p className="mb-6 max-w-md" style={{ color: "var(--muted)" }}>
+                The leading platform for luxury car auctions and trading. Curated selection, total transparency, secure
+                payments.
+              </p>
+              <div className="flex space-x-4">
+                <a
+                  href="https://youtube.com/@brokermotors"
+                  className="transition-colors hover:opacity-80"
+                  style={{ color: "var(--muted)" }}
+                  aria-label="YouTube"
+                >
+                  <Youtube className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://instagram.com/brokermotors"
+                  className="transition-colors hover:opacity-80"
+                  style={{ color: "var(--muted)" }}
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://linkedin.com/company/brokermotors"
+                  className="transition-colors hover:opacity-80"
+                  style={{ color: "var(--muted)" }}
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-6 h-6" />
+                </a>
+              </div>
             </div>
 
+            {/* Contact Info */}
             <div>
-              <h3
-                className={`font-semibold mb-4 text-sm sm:text-base ${theme === "dark" ? "text-[#ff0092]" : "text-amber-400"}`}
-              >
-                {t("contact.address")}
-              </h3>
-              <p className="text-slate-400 text-sm sm:text-base">
-                Piazzale della Puppa
-                <br />
-                33081 Piancavallo PN
-              </p>
+              <h4 className="text-lg font-bold mb-4" style={{ color: "var(--text)" }}>
+                Contact
+              </h4>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Phone className="w-4 h-4" style={{ color: "var(--accent)" }} />
+                  <span className="text-sm" style={{ color: "var(--muted)" }}>
+                    +44 20 7946 0958
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="w-4 h-4" style={{ color: "var(--accent)" }} />
+                  <span className="text-sm" style={{ color: "var(--muted)" }}>
+                    info@brokermotors.com
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <LocationIcon className="w-4 h-4 mt-0.5" style={{ color: "var(--accent)" }} />
+                  <span className="text-sm" style={{ color: "var(--muted)" }}>
+                    123 Luxury Lane
+                    <br />
+                    London, SW1A 1AA
+                    <br />
+                    United Kingdom
+                  </span>
+                </div>
+              </div>
             </div>
 
+            {/* Legal Links */}
             <div>
-              <h3
-                className={`font-semibold mb-4 text-sm sm:text-base ${theme === "dark" ? "text-[#ff0092]" : "text-amber-400"}`}
-              >
-                {t("contact.hours")}
-              </h3>
-              <p className="text-slate-400 text-sm sm:text-base">
-                {t("hours.weekend")}
-                <br />
-                {t("hours.weekdays")}
-              </p>
+              <h4 className="text-lg font-bold mb-4" style={{ color: "var(--text)" }}>
+                Legal
+              </h4>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setShowPrivacyModal(true)}
+                  className="block text-sm hover:opacity-80 transition-colors text-left"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Privacy Policy
+                </button>
+                <a
+                  href="/terms"
+                  className="block text-sm hover:opacity-80 transition-colors"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Terms & Conditions
+                </a>
+                <a
+                  href="/cookies"
+                  className="block text-sm hover:opacity-80 transition-colors"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Cookie Policy
+                </a>
+                <a
+                  href="/complaints"
+                  className="block text-sm hover:opacity-80 transition-colors"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Complaints Procedure
+                </a>
+              </div>
             </div>
           </div>
 
-          <div className="border-t border-slate-700 pt-6 sm:pt-8 text-center text-slate-400">
-            <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm">
-              <p>
-                {t("footer.createdBy")}{" "}
-                <a
-                  href="https://www.wearerighello.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`font-semibold transition-colors ${
-                    theme === "dark" ? "text-[#ff0092] hover:text-[#ff3daa]" : "text-amber-400 hover:text-amber-300"
-                  }`}
-                >
-                  Righello s.r.l.
-                </a>
-              </p>
-              <span className="hidden sm:inline">|</span>
-              <button
-                onClick={() => setShowPrivacyModal(true)}
-                className={`transition-colors ${
-                  theme === "dark" ? "text-[#ff0092] hover:text-[#ff3daa]" : "text-amber-400 hover:text-amber-300"
-                }`}
-              >
-                Privacy & Cookie Policy
-              </button>
-            </div>
-            <p className="mt-2 text-xs sm:text-sm">© 2025 La Busa del Sauc. Tutti i diritti riservati.</p>
+          {/* Bottom Bar */}
+          <div className="pt-8 border-t text-center" style={{ borderColor: "var(--border)", color: "var(--muted)" }}>
+            <p className="text-sm">
+              © 2025 Broker Motors Ltd. All rights reserved. Authorised and regulated by the Financial Conduct
+              Authority.
+            </p>
           </div>
         </div>
       </footer>
@@ -798,153 +1558,36 @@ function RestaurantContent() {
       {showPrivacyModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="professional-container max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            className="card max-w-2xl w-full max-h-[80vh] overflow-y-auto"
           >
-            <div className="p-6 sm:p-8">
-              <div className="flex justify-between items-center mb-6">
-                <h2
-                  className={`text-2xl sm:text-3xl font-bold ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                >
-                  Privacy & Cookie Policy
-                </h2>
-                <Button
-                  onClick={() => setShowPrivacyModal(false)}
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  ✕
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold" style={{ color: "var(--text)" }}>
+                  Privacy Policy
+                </h3>
+                <Button variant="ghost" size="sm" onClick={() => setShowPrivacyModal(false)} className="p-2">
+                  ×
                 </Button>
               </div>
-
-              {/* Introduction */}
-              <div
-                className={`professional-container p-4 sm:p-6 mb-4 sm:mb-6 border-l-4 ${theme === "dark" ? "border-[#ff0092]" : "border-amber-400"}`}
-              >
-                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
-                  This document outlines how we collect, use, and protect your personal information, as well as how we
-                  utilize cookies to enhance your experience on our website. It is important to understand both our
-                  privacy practices and our cookie usage to ensure transparency and trust. Please review this combined
-                  policy carefully to understand your rights and our obligations regarding your data.
+              <div className="space-y-4 text-sm" style={{ color: "var(--muted)" }}>
+                <p>
+                  At Broker Motors, we are committed to protecting your privacy and ensuring the security of your
+                  personal information.
                 </p>
-              </div>
-
-              <div className="space-y-6 sm:space-y-8">
-                {/* Section 1 */}
-                <div className="professional-container p-4 sm:p-6">
-                  <h3
-                    className={`text-lg sm:text-xl font-semibold mb-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                  >
-                    1. Introduzione
-                  </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Questo sito, accessibile all'indirizzo https://www.wearerighello.com/busadelsauc, non raccoglie né
-                    tratta dati personali identificabili né utilizza cookie di profilazione o finalizzati alla
-                    pubblicità.
-                  </p>
-                </div>
-
-                {/* Section 2 */}
-                <div className="professional-container p-4 sm:p-6">
-                  <h3
-                    className={`text-lg sm:text-xl font-semibold mb-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                  >
-                    2. Cookie tecnici essenziali
-                  </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-4">
-                    Il sito potrebbe utilizzare solo cookie tecnici strettamente necessari al corretto funzionamento (ad
-                    esempio per mantenere la navigazione tra le pagine o gestire eventuali preferenze tecniche). Questi
-                    cookie:
-                  </p>
-                  <ul className="list-disc list-inside text-sm sm:text-base text-muted-foreground space-y-2 ml-4">
-                    <li>non raccolgono dati personali;</li>
-                    <li>non richiedono esplicito consenso dell'utente ai sensi del GDPR e normativa italiana.</li>
-                  </ul>
-                </div>
-
-                {/* Section 3 */}
-                <div className="professional-container p-4 sm:p-6">
-                  <h3
-                    className={`text-lg sm:text-xl font-semibold mb-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                  >
-                    3. Assenza di profilazione e tracciamento
-                  </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Il sito non utilizza cookie di profilazione, pubblicitari, statistici o di terze parti (es. Google
-                    Analytics, social plugins, retargeting).
-                  </p>
-                </div>
-
-                {/* Section 4 */}
-                <div className="professional-container p-4 sm:p-6">
-                  <h3
-                    className={`text-lg sm:text-xl font-semibold mb-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                  >
-                    4. Trattamento dei dati personali
-                  </h3>
-                  <ul className="list-disc list-inside text-sm sm:text-base text-muted-foreground space-y-2 ml-4">
-                    <li>Nessun dato personale viene raccolto, archiviato o trattato.</li>
-                    <li>
-                      Non sono presenti form, registrazioni, newsletter o funzioni interattive che richiedano
-                      informazioni personali.
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Section 5 */}
-                <div className="professional-container p-4 sm:p-6">
-                  <h3
-                    className={`text-lg sm:text-xl font-semibold mb-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                  >
-                    5. Diritti dell'utente
-                  </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Poiché non vengono raccolti o trattati dati personali, non si applicano procedure legate
-                    all'esercizio dei diritti GDPR (accesso, rettifica, cancellazione, ecc.).
-                  </p>
-                </div>
-
-                {/* Section 6 */}
-                <div className="professional-container p-4 sm:p-6">
-                  <h3
-                    className={`text-lg sm:text-xl font-semibold mb-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                  >
-                    6. Sicurezza
-                  </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Anche se non vengono trattati dati personali, il sito adotta misure tecniche per garantire il
-                    corretto funzionamento e la sicurezza dell'accesso (come ad esempio un certificato SSL/TLS per la
-                    connessione HTTPS).
-                  </p>
-                </div>
-
-                {/* Section 7 */}
-                <div className="professional-container p-4 sm:p-6">
-                  <h3
-                    className={`text-lg sm:text-xl font-semibold mb-4 ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}
-                  >
-                    7. Modifiche della policy
-                  </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-4">
-                    Questa policy può essere aggiornata per riflettere eventuali cambiamenti tecnici o normativi. In
-                    caso di modifiche rilevanti, sarà cura dell'amministratore pubblicare la versione aggiornata con
-                    data di entrata in vigore.
-                  </p>
-                  <p className={`text-sm font-semibold ${theme === "dark" ? "text-[#ff0092]" : "text-amber-500"}`}>
-                    Ultima revisione: 30 agosto 2025
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 sm:mt-8 text-center">
-                <Button
-                  onClick={() => setShowPrivacyModal(false)}
-                  className={`text-black px-6 sm:px-8 py-3 text-base ${theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-400 hover:bg-amber-500"}`}
-                >
-                  Ho compreso
-                </Button>
+                <p>
+                  We collect information you provide when registering, bidding, or selling through our platform. This
+                  includes contact details, financial information for verification, and vehicle details.
+                </p>
+                <p>
+                  Your information is used to facilitate auctions, verify identity for security purposes, communicate
+                  about our services, and comply with legal requirements.
+                </p>
+                <p>
+                  We implement industry-standard security measures and never sell your personal information to third
+                  parties.
+                </p>
               </div>
             </div>
           </motion.div>
@@ -954,12 +1597,6 @@ function RestaurantContent() {
   )
 }
 
-export default function LaBusaDelSauc() {
-  return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <RestaurantContent />
-      </LanguageProvider>
-    </ThemeProvider>
-  )
+export default function BrokerMotorsPage() {
+  return <BrokerMotorsContent />
 }

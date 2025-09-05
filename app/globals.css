@@ -1,23 +1,15 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
-  /* Professional Color Palette */
-  --primary-dark: #0f172a; /* Slate 900 */
-  --primary-gold: #fbbf24; /* Amber 400 */
-  --text-light: #f8fafc; /* Slate 50 */
-  --text-muted: #cbd5e1; /* Slate 300 */
-  --bg-dark: #1e293b; /* Slate 800 */
-  --bg-light: rgba(15, 23, 42, 0.8);
-  --border-subtle: #334155; /* Slate 700 */
-
-  /* Light mode colors (keep yellow/amber) */
-  --accent-light: #fbbf24; /* Amber 400 */
-  --accent-light-hover: #f59e0b; /* Amber 500 */
-
-  /* Dark mode colors (use magenta) */
-  --accent-dark: #ff0092; /* Magenta primary */
-  --accent-dark-hover: #e6008a; /* Magenta darker */
-  --accent-dark-light: #ff3daa; /* Magenta lighter */
+  /* Broker Motors Theme Variables */
+  --bg: #ffffff;
+  --text: #0a0a0a;
+  --muted: #666666;
+  --card: #f7f7f8;
+  --border: #e6e6e8;
+  --accent: #0b5cff;
+  --accent-contrast: #ffffff;
 
   /* Light Theme */
   --background: oklch(1 0 0);
@@ -53,13 +45,18 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-
-  /* Apply theme-specific colors */
-  --accent-primary: var(--accent-light);
-  --accent-hover: var(--accent-light-hover);
 }
 
 .dark {
+  /* Dark Theme Variables */
+  --bg: #0a0b0d;
+  --text: #f4f6f8;
+  --muted: #a5aab2;
+  --card: #121418;
+  --border: #22252a;
+  --accent: #7aa2ff;
+  --accent-contrast: #0b0e14;
+
   /* Dark Theme */
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -93,14 +90,9 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
-
-  /* Dark mode uses magenta accent colors */
-  --accent-primary: var(--accent-dark);
-  --accent-hover: var(--accent-dark-hover);
 }
 
 @theme inline {
-  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -144,67 +136,32 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--bg);
+    color: var(--text);
   }
 }
 
 @layer utilities {
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .btn--primary {
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  .btn--primary:hover {
+    opacity: 0.9;
+  }
+
   .professional-container {
     @apply rounded-xl bg-card border border-border shadow-lg backdrop-blur-sm;
   }
 
-  .professional-container-dark {
-    @apply rounded-xl bg-slate-800/90 border border-slate-700/50 shadow-xl backdrop-blur-sm;
-  }
-
-  .professional-text-shadow {
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  }
-
   .professional-hover {
     @apply transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02];
-  }
-
-  .ken-burns {
-    animation: kenBurns 12s ease-in-out infinite;
-  }
-
-  @keyframes kenBurns {
-    0%,
-    100% {
-      transform: scale(1) rotate(0deg);
-    }
-    25% {
-      transform: scale(1.08) rotate(0.5deg);
-    }
-    50% {
-      transform: scale(1.12) rotate(0deg);
-    }
-    75% {
-      transform: scale(1.06) rotate(-0.5deg);
-    }
-  }
-
-  .crossfade-enter {
-    opacity: 0;
-  }
-
-  .crossfade-enter-active {
-    opacity: 1;
-    transition: opacity 1.5s ease-in-out;
-  }
-
-  .crossfade-exit {
-    opacity: 1;
-  }
-
-  .crossfade-exit-active {
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-  }
-
-  .gradient-overlay {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 50%, rgba(15, 23, 42, 0.9) 100%);
   }
 
   .glass-morphism {
@@ -224,7 +181,7 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--bg);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -233,82 +190,5 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #d97706;
-}
-
-@media (max-width: 768px) {
-  /* Stop overflow orizzontale in modo robusto */
-  html,
-  body {
-    overflow-x: hidden;
-  }
-
-  /* Non toccare TUTTE le grid: gestisci il gutter a livello di wrapper pagina */
-  main,
-  .page,
-  .section,
-  .wrapper,
-  .content-wrapper {
-    padding-inline: clamp(16px, 4vw, 24px);
-    margin: 0 auto;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* Gallery: forzare 1 colonna in mobile */
-  .gallery,
-  .grid-gallery,
-  .photos {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .gallery img,
-  .grid-gallery img,
-  .photos img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  /* Header/topbar compatti e full-width senza "bande" */
-  .topbar,
-  .header,
-  .header-bar,
-  .toolbar {
-    width: 100%;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding-inline: clamp(12px, 4vw, 20px);
-    box-sizing: border-box;
-  }
-
-  /* Add spacing between navbar and hero content on mobile */
-  .hero-content,
-  [class*="hero"] > div {
-    padding-top: 100px !important;
-  }
-
-  /* Evita 100vw dentro contenitori con padding */
-  [style*="width: 100vw"] {
-    width: 100% !important;
-  }
-
-  /* Evita spostamenti orizzontali */
-  [style*="translateX("],
-  .shift-left,
-  .shift-right {
-    transform: none !important;
-  }
-
-  /* Evita row full-bleed che sforano */
-  .full-bleed,
-  .wide,
-  .row {
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
+  opacity: 0.8;
 }

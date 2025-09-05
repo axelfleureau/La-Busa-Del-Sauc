@@ -1,0 +1,112 @@
+{
+  "nav": {
+    "stock": "Stock",
+    "auctions": "Auctions",
+    "sell": "Sell",
+    "services": "Services",
+    "insights": "Insights",
+    "contact": "Contact",
+    "register": "Register"
+  },
+  "hero": {
+    "title": "Luxury Car Auctions & Trading",
+    "subtitle": "Curated selection, inspection reports, secure payments, insured delivery.",
+    "ctaBid": "Register to bid",
+    "ctaSell": "Sell your car",
+    "badge": "Sign-up & KYC in 2 minutes • Secure Escrow"
+  },
+  "usp": {
+    "title": "Why choose Broker Motors",
+    "items": [
+      {
+        "t": "Curated selection",
+        "d": "Verified examples with full service history."
+      },
+      {
+        "t": "Full transparency",
+        "d": "Inspection reports, HD photos, videos & docs."
+      },
+      {
+        "t": "Secure payments",
+        "d": "Dedicated escrow with KYC/AML."
+      },
+      {
+        "t": "Premium logistics",
+        "d": "Insured transport across UK/EU."
+      }
+    ]
+  },
+  "how": {
+    "title": "How it works",
+    "steps": [
+      {
+        "t": "Create account",
+        "d": "Complete identity verification."
+      },
+      {
+        "t": "Security deposit",
+        "d": "Fully refundable after auctions."
+      },
+      {
+        "t": "Bid",
+        "d": "Live bidding and anti-sniping soft close."
+      },
+      {
+        "t": "Delivery",
+        "d": "Secure payment & insured transport."
+      }
+    ],
+    "guide": "Full auction guide"
+  },
+  "sell": {
+    "title": "Sell your car",
+    "bullets": ["Valuation in 24h", "Pro photo/video", "Marketing campaign", "Clear fees"],
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "car": "Make/Model/Year",
+      "km": "Mileage",
+      "media": "Photos/Video link",
+      "submit": "Request valuation",
+      "privacy": "I consent to data processing"
+    }
+  },
+  "lots": {
+    "title": "Featured Lots",
+    "description": "Discover our curated selection of luxury cars at auction",
+    "viewLot": "View Lot",
+    "reserve": "Reserve",
+    "noReserve": "No Reserve",
+    "endsIn": "Ends in",
+    "mileage": "miles"
+  },
+  "guarantees": {
+    "title": "Guarantees & Inspections",
+    "description": "Every vehicle undergoes rigorous checks to ensure transparency and quality",
+    "inspection": "Vehicle Inspection Report",
+    "escrow": "Escrow & KYC/AML",
+    "transport": "Insured transport UK/EU",
+    "viewReport": "View sample report"
+  },
+  "insights": {
+    "title": "Insights & News",
+    "description": "Stay updated on luxury car market trends"
+  },
+  "faq": {
+    "title": "FAQ"
+  },
+  "ctaFinal": {
+    "title": "Ready to place your bid?",
+    "cta1": "Create your account",
+    "cta2": "Talk to an expert"
+  },
+  "footer": {
+    "tagline": "The leading platform for luxury car auctions",
+    "contact": "Contact",
+    "hours": "Hours",
+    "legal": "Legal",
+    "disclaimer": "Broker Motors is authorised and regulated by the FCA. All payments are protected by dedicated escrow.",
+    "rights": "All rights reserved."
+  }
+}

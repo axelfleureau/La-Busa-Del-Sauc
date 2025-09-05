@@ -1,0 +1,112 @@
+{
+  "nav": {
+    "stock": "Stock",
+    "auctions": "Aste",
+    "sell": "Vendi",
+    "services": "Servizi",
+    "insights": "Insights",
+    "contact": "Contatti",
+    "register": "Registrati"
+  },
+  "hero": {
+    "title": "Aste & Compravendita di Auto di Lusso",
+    "subtitle": "Selezione curata, report ispettivi, pagamenti sicuri, consegna assicurata.",
+    "ctaBid": "Registrati per fare offerte",
+    "ctaSell": "Vendi la tua auto",
+    "badge": "Iscrizione & KYC in 2 minuti • Escrow sicuro"
+  },
+  "usp": {
+    "title": "Perché scegliere Broker Motors",
+    "items": [
+      {
+        "t": "Selezione curata",
+        "d": "Solo esemplari verificati e con storico manutenzione."
+      },
+      {
+        "t": "Trasparenza totale",
+        "d": "Report ispettivi, foto HD, video e documentazione completa."
+      },
+      {
+        "t": "Pagamenti sicuri",
+        "d": "Escrow dedicato con KYC/AML."
+      },
+      {
+        "t": "Logistica premium",
+        "d": "Trasporto assicurato in UE/UK, door-to-door."
+      }
+    ]
+  },
+  "how": {
+    "title": "Come funziona",
+    "steps": [
+      {
+        "t": "Crea account",
+        "d": "Completa la verifica d'identità."
+      },
+      {
+        "t": "Deposito cauzionale",
+        "d": "Rimborsabile al termine delle aste."
+      },
+      {
+        "t": "Fai offerte",
+        "d": "Live bidding e soft-close anti sniping."
+      },
+      {
+        "t": "Consegna",
+        "d": "Pagamento sicuro e trasporto assicurato."
+      }
+    ],
+    "guide": "Guida completa alle aste"
+  },
+  "sell": {
+    "title": "Vendi la tua auto",
+    "bullets": ["Valutazione in 24h", "Shooting professionale", "Campagna dedicata", "Commissioni chiare"],
+    "form": {
+      "name": "Nome",
+      "email": "Email",
+      "phone": "Telefono",
+      "car": "Marca/Modello/Anno",
+      "km": "Chilometraggio",
+      "media": "Link foto/video",
+      "submit": "Richiedi valutazione",
+      "privacy": "Acconsento al trattamento dei dati"
+    }
+  },
+  "lots": {
+    "title": "Lotti in evidenza",
+    "description": "Scopri la nostra selezione curata di auto di lusso all'asta",
+    "viewLot": "Apri il lotto",
+    "reserve": "Riserva",
+    "noReserve": "No Reserve",
+    "endsIn": "Termina tra",
+    "mileage": "km"
+  },
+  "guarantees": {
+    "title": "Garanzie & Ispezioni",
+    "description": "Ogni veicolo viene sottoposto a controlli rigorosi per garantire trasparenza e qualità",
+    "inspection": "Vehicle Inspection Report",
+    "escrow": "Escrow & KYC/AML",
+    "transport": "Trasporto assicurato UE/UK",
+    "viewReport": "Vedi esempio report"
+  },
+  "insights": {
+    "title": "Insights & News",
+    "description": "Rimani aggiornato sulle tendenze del mercato auto di lusso"
+  },
+  "faq": {
+    "title": "Domande frequenti"
+  },
+  "ctaFinal": {
+    "title": "Pronto a fare la tua offerta?",
+    "cta1": "Crea il tuo account",
+    "cta2": "Parla con un esperto"
+  },
+  "footer": {
+    "tagline": "La piattaforma leader per aste di auto di lusso",
+    "contact": "Contatti",
+    "hours": "Orari",
+    "legal": "Note legali",
+    "disclaimer": "Broker Motors è autorizzato e regolamentato dalla FCA. Tutti i pagamenti sono protetti da escrow dedicato.",
+    "rights": "Tutti i diritti riservati."
+  }
+}
