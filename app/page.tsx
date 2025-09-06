@@ -1,7 +1,4 @@
 "use client"
-
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import {
@@ -10,14 +7,11 @@ import {
   Moon,
   Globe,
   Gavel,
-  Shield,
   CheckCircle,
   Users,
   FileText,
-  Truck,
   Award,
   ArrowRight,
-  BookOpen,
   Youtube,
   Instagram,
   Linkedin,
@@ -28,6 +22,9 @@ import {
   DollarSign,
   PieChart,
   Calculator,
+  X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/components/theme-provider"
@@ -37,183 +34,131 @@ function BrokerMotorsContent() {
   const [activeSection, setActiveSection] = useState("home")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+  const [showROIModal, setShowROIModal] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [selectedCar, setSelectedCar] = useState<any>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [roiData, setRoiData] = useState({
+    amount: 1000,
+    months: 12,
+    apr: 10,
+  })
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     car: "",
-    mileage: "",
-    media: "",
+    km: "",
+    year: "",
     privacy: false,
   })
   const { theme, setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
 
-  const featuredCars = [
+  const cars = [
     {
-      id: "volvo-xc90",
-      title: "Volvo XC90 T8",
-      year: 2024,
-      mileage: 2500,
-      color: "Crystal White Pearl",
-      reserve: false,
-      endsAt: "2025-01-15T19:00:00Z",
-      currentBid: "£68,500",
-      image: "/volvo-xc90-luxury-suv.jpg",
-      badge: "LIVE",
-      investmentReturn: "8.5%",
-      monthlyIncome: "£485",
+      id: "volvo-xc90-2017",
+      title: "Volvo XC90 (2017)",
+      img: "/cars/volvo-xc90-2017.jpg",
+      gallery: ["/cars/volvo-xc90-2017.jpg"],
+      spec: [
+        "2.0 Diesel Bi-Turbo",
+        "Nero metallizzato",
+        'Cerchi 21" set invernale',
+        "Interni pelle color sughero",
+        "Full optional",
+        "Impianto frenante maggiorato",
+        "Motore e meccanica rigenerati km0",
+      ],
+      badge: "live",
+      year: 2017,
+      mileage: 45000,
+      color: "Nero metallizzato",
     },
     {
-      id: "jaguar-ftype",
-      title: "Jaguar F-Type R",
-      year: 2023,
-      mileage: 3200,
+      id: "jaguar-2018",
+      title: "Jaguar (2018)",
+      img: "/cars/jaguar-2018.jpg",
+      gallery: ["/cars/jaguar-2018.jpg"],
+      spec: ["Dettagli in aggiornamento"],
+      badge: "soon",
+      year: 2018,
+      mileage: 32000,
       color: "British Racing Green",
-      reserve: true,
-      endsAt: "2025-01-20T18:30:00Z",
-      currentBid: "£89,000",
-      image: "/jaguar-f-type-british-racing-green.jpg",
-      badge: "NO RESERVE",
-      investmentReturn: "12.3%",
-      monthlyIncome: "£740",
     },
     {
-      id: "landrover-44",
-      title: "Land Rover Defender 110 4.4",
-      year: 2024,
-      mileage: 1800,
+      id: "land-rover-44-2017",
+      title: "Land Rover 4.4 (2017)",
+      img: "/cars/land-rover-44-2017.jpg",
+      gallery: ["/cars/land-rover-44-2017.jpg"],
+      spec: ["V8 Diesel 4.4", "Pacchetto luxury", "Sospensioni ad aria"],
+      badge: "noReserve",
+      year: 2017,
+      mileage: 58000,
       color: "Santorini Black",
-      reserve: false,
-      endsAt: "2025-01-18T20:00:00Z",
-      currentBid: "£95,500",
-      image: "/land-rover-defender-110-black.jpg",
-      badge: "PRESTO",
-      investmentReturn: "9.7%",
-      monthlyIncome: "£625",
     },
     {
-      id: "landrover-30",
-      title: "Land Rover Range Rover Sport 3.0",
-      year: 2023,
-      mileage: 4100,
-      color: "Byron Blue",
-      reserve: true,
-      endsAt: "2025-01-22T19:30:00Z",
-      currentBid: "£78,200",
-      image: "/range-rover-sport-byron-blue.jpg",
-      badge: "LIVE",
-      investmentReturn: "10.1%",
-      monthlyIncome: "£590",
+      id: "land-rover-30-2017",
+      title: "Land Rover 3.0 (2017)",
+      img: "/cars/land-rover-30-2017.jpg",
+      gallery: ["/cars/land-rover-30-2017.jpg"],
+      spec: ["V6 Diesel 3.0", 'Cerchi 21/22"', "Amplificatore acustico rombo (se presente)"],
+      badge: "live",
+      year: 2017,
+      mileage: 42000,
+      color: "Fuji White",
     },
     {
-      id: "maserati-levante",
-      title: "Maserati Levante Trofeo",
-      year: 2023,
-      mileage: 2900,
-      color: "Rosso Potente",
-      reserve: false,
-      endsAt: "2025-01-25T18:00:00Z",
-      currentBid: "£125,000",
-      image: "/maserati-levante-trofeo-red.jpg",
-      badge: "NO RESERVE",
-      investmentReturn: "15.2%",
-      monthlyIncome: "£1,250",
+      id: "maserati-levante-2018",
+      title: "Maserati Levante (2018)",
+      img: "/cars/maserati-levante-2018.jpg",
+      gallery: ["/cars/maserati-levante-2018.jpg"],
+      spec: ["3.0 Diesel", "Doppio treno invernali/estivi", "Uso rappresentanza"],
+      badge: "soon",
+      year: 2018,
+      mileage: 28000,
+      color: "Blu Emozione",
     },
     {
-      id: "bmw-serie7",
-      title: "BMW Serie 7 760Li",
-      year: 2024,
-      mileage: 1200,
-      color: "Mineral Grey Metallic",
-      reserve: true,
-      endsAt: "2025-01-28T19:00:00Z",
-      currentBid: "£142,500",
-      image: "/bmw-serie-7-mineral-grey.jpg",
-      badge: "PRESTO",
-      investmentReturn: "11.8%",
-      monthlyIncome: "£1,180",
+      id: "bmw-7-2018",
+      title: "BMW Serie 7 (2018)",
+      img: "/cars/bmw-7-2018.jpg",
+      gallery: ["/cars/bmw-7-2018.jpg"],
+      spec: [
+        "3000 Diesel",
+        "Blu notte metallizzato",
+        "Interni pelle sabbia corallo",
+        "Monitor posteriori",
+        "Sedili massaggianti",
+        "Consumi contenuti",
+      ],
+      badge: "noReserve",
+      year: 2018,
+      mileage: 35000,
+      color: "Blu notte metallizzato",
     },
   ]
 
-  const faqItems = [
-    {
-      question: t("faq.commission.question") || "Quali sono le commissioni?",
-      answer:
-        t("faq.commission.answer") ||
-        "Le commissioni variano dal 5% al 10% in base al valore del veicolo e ai servizi richiesti.",
-    },
-    {
-      question: t("faq.investment.question") || "Come funzionano gli investimenti frazionati?",
-      answer:
-        t("faq.investment.answer") ||
-        "Puoi acquistare quote di proprietà di auto di lusso a partire da €1.000. I profitti derivanti dall'uso e dalla rivendita vengono distribuiti mensilmente agli investitori.",
-    },
-    {
-      question: t("faq.returns.question") || "Quali sono i rendimenti attesi?",
-      answer:
-        t("faq.returns.answer") ||
-        "I rendimenti variano dal 8% al 15% annuo, con distribuzioni mensili basate sui profitti generati dal veicolo.",
-    },
-    {
-      question: t("faq.deposit.question") || "Come funzionano i depositi di sicurezza?",
-      answer:
-        t("faq.deposit.answer") ||
-        "Il deposito cauzionale è del 10% del valore dell'offerta ed è completamente rimborsabile se non vinci l'asta.",
-    },
-    {
-      question: t("faq.payment.question") || "Come avviene il pagamento?",
-      answer:
-        t("faq.payment.answer") ||
-        "Utilizziamo un sistema di escrow sicuro con pagamenti tramite bonifico bancario o carta di credito.",
-    },
-  ]
-
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.privacy) {
-      alert("Please accept the privacy policy to continue.")
-      return
+  const calculateROI = () => {
+    const { amount, months, apr } = roiData
+    const monthlyRate = apr / 12 / 100
+    const futureValue = amount * Math.pow(1 + monthlyRate, months)
+    const totalReturn = futureValue - amount
+    const monthlyIncome = totalReturn / months
+    return {
+      monthlyIncome: monthlyIncome,
+      totalReturn: totalReturn,
+      futureValue: futureValue,
     }
-    console.log("Form submitted:", formData)
-    // Here you would typically send the data to your backend
-    alert("Thank you! We'll contact you within 24 hours with a valuation.")
   }
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const getTimeRemaining = (endDate: string) => {
-    const now = new Date().getTime()
-    const end = new Date(endDate).getTime()
-    const difference = end - now
-
-    if (difference <= 0) return "Ended"
-
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
-
-    if (days > 0) return `${days}d ${hours}h`
-    if (hours > 0) return `${hours}h ${minutes}m`
-    return `${minutes}m`
-  }
-
-  const getStatusBadge = (status: string) => {
-    const baseClasses = "px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider"
-    switch (status) {
-      case "LIVE":
-        return `${baseClasses} bg-red-500 text-white animate-pulse`
-      case "NO RESERVE":
-        return `${baseClasses} bg-green-500 text-white`
-      case "PRESTO":
-        return `${baseClasses} bg-orange-500 text-white`
-      default:
-        return `${baseClasses} bg-gray-500 text-white`
-    }
+  const formatCurrency = (amount: number) => {
+    const locale = language === "it" ? "it-IT" : "en-GB"
+    const currency = language === "it" ? "EUR" : "GBP"
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: currency,
+    }).format(amount)
   }
 
   useEffect(() => {
@@ -245,17 +190,18 @@ function BrokerMotorsContent() {
   }
 
   const navigationItems = [
-    { key: "home", label: t("nav.stock") || "Stock" },
-    { key: "lots", label: t("nav.auctions") || "Aste" },
-    { key: "investment", label: t("nav.invest") || "Investi" },
-    { key: "usp", label: t("nav.services") || "Servizi" },
-    { key: "sell", label: t("nav.insights") || "Insights" },
-    { key: "contact", label: t("nav.contact") || "Contatti" },
+    { key: "home", label: t("nav.stock") as string },
+    { key: "lots", label: t("nav.auctions") as string },
+    { key: "investment", label: t("nav.invest") as string },
+    { key: "usp", label: t("nav.services") as string },
+    { key: "sell", label: t("nav.insights") as string },
+    { key: "contact", label: t("nav.contact") as string },
   ]
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bg)", color: "var(--text)" }}>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-morphism border-b" style={{ borderColor: "var(--border)" }}>
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 glass-morphism border-b nav">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
@@ -282,10 +228,14 @@ function BrokerMotorsContent() {
                 <button
                   key={item.key}
                   onClick={() => scrollToSection(item.key)}
-                  className={`text-sm font-medium transition-colors hover:opacity-80 ${
+                  className={`text-sm font-medium transition-colors hover:opacity-80 focusable ${
                     activeSection === item.key ? "opacity-100" : "opacity-70"
                   }`}
-                  style={{ color: "var(--text)" }}
+                  style={{
+                    color: "var(--text)",
+                    textDecoration: activeSection === item.key ? "underline" : "none",
+                    textDecorationColor: "var(--accent)",
+                  }}
                 >
                   {item.label}
                 </button>
@@ -298,9 +248,9 @@ function BrokerMotorsContent() {
               <div className="relative">
                 <button
                   onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:opacity-80"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors hover:opacity-80 focusable"
                   style={{ color: "var(--text)" }}
-                  aria-label="Select language"
+                  aria-label={(t("nav.language") as string) || "Select language"}
                 >
                   <Globe size={18} />
                   <span className="text-sm font-medium uppercase">{language}</span>
@@ -308,10 +258,7 @@ function BrokerMotorsContent() {
                 </button>
 
                 {showLanguageDropdown && (
-                  <div
-                    className="absolute right-0 top-full mt-2 py-2 w-32 rounded-lg shadow-lg border z-50"
-                    style={{ background: "var(--card)", borderColor: "var(--border)" }}
-                  >
+                  <div className="absolute right-0 top-full mt-2 py-2 w-40 rounded-lg shadow-lg border z-50 card">
                     {Object.entries(languages).map(([code, lang]) => (
                       <button
                         key={code}
@@ -319,7 +266,7 @@ function BrokerMotorsContent() {
                           setLanguage(code as keyof typeof languages)
                           setShowLanguageDropdown(false)
                         }}
-                        className="w-full px-4 py-2 text-left text-sm hover:opacity-80 transition-colors"
+                        className="w-full px-4 py-2 text-left text-sm hover:opacity-80 transition-colors flex items-center space-x-2 focusable"
                         style={{ color: "var(--text)" }}
                         role="menuitem"
                       >
@@ -334,7 +281,7 @@ function BrokerMotorsContent() {
               {/* Theme Toggle */}
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2 rounded-lg transition-colors hover:opacity-80"
+                className="p-2 rounded-lg transition-colors hover:opacity-80 focusable"
                 style={{ color: "var(--text)" }}
                 aria-label="Toggle theme"
               >
@@ -342,101 +289,76 @@ function BrokerMotorsContent() {
               </button>
 
               {/* Register Button */}
-              <Button size="sm" className="btn--primary hidden sm:inline-flex">
-                {t("nav.register") || "Registrati"}
+              <Button size="sm" className="btn--primary hidden sm:inline-flex focusable">
+                {t("nav.register") as string}
               </Button>
             </div>
           </div>
         </div>
       </nav>
 
-      <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Hero Section */}
+      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}
         <video
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-cover"
           autoPlay
           muted
           loop
           playsInline
           poster="/media/hero-poster.jpg"
-          aria-label="Luxury cars in showroom background video"
         >
           <source src="/media/hero.webm" type="video/webm" />
           <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/brokerautomotive2-HXFq89EaeL3Okl2DBwRyej9IfCLoWp.mp4" type="video/mp4" />
         </video>
 
-        {/* Video Overlay */}
-        <div className="absolute inset-0 bg-black/50 z-10"></div>
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              theme === "dark"
+                ? "linear-gradient(135deg, rgba(11, 11, 14, 0.8) 0%, rgba(20, 20, 24, 0.6) 100%)"
+                : "linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%)",
+          }}
+        />
 
         {/* Hero Content */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4 pt-24 z-20">
-          {/* Main Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="mb-6"
-          >
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-4 leading-tight">
-              Broker Motors
+        <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6" style={{ color: "#FFFFFF" }}>
+              {t("hero.title") as string}
             </h1>
-          </motion.div>
-
-          {/* Investment Subtitle */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
-            className="mb-8"
-          >
-            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-6 py-4 max-w-3xl mx-auto">
-              <p className="text-lg sm:text-xl md:text-2xl font-light leading-relaxed">
-                {language === "it"
-                  ? "Investi nelle supercar, guadagna ogni mese"
-                  : "Invest in Supercars, Earn Monthly Income"}
-              </p>
+            <p className="text-xl sm:text-2xl md:text-3xl mb-8 leading-relaxed" style={{ color: "#FFFFFF" }}>
+              {t("hero.subtitle") as string}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                size="lg"
+                className="btn--primary h-14 text-lg font-semibold rounded-xl px-8 focusable"
+                onClick={() => scrollToSection("investment")}
+              >
+                <TrendingUp className="mr-2 h-5 w-5" />
+                {t("hero.ctaInvest") as string}
+              </Button>
+              <Button
+                size="lg"
+                className="btn--ghost h-14 text-lg font-semibold rounded-xl px-8 focusable"
+                style={{
+                  background: "rgba(255, 255, 255, 0.9)",
+                  border: "1px solid rgba(255, 255, 255, 0.3)",
+                  color: "#111217",
+                }}
+                onClick={() => scrollToSection("lots")}
+              >
+                <Gavel className="mr-2 h-5 w-5" />
+                {t("hero.ctaAuctions") as string}
+              </Button>
             </div>
           </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 w-full max-w-2xl"
-          >
-            <Button
-              size="lg"
-              className="btn--primary h-14 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg flex-1"
-              onClick={() => scrollToSection("investment")}
-            >
-              <TrendingUp className="mr-2 h-5 w-5" />
-              {language === "it" ? "Inizia a investire" : "Start Investing"}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="lg"
-              className="h-14 text-lg border-white/30 text-white hover:bg-white/10 rounded-xl transition-all duration-300 hover:scale-105 bg-transparent backdrop-blur-sm flex-1"
-              onClick={() => scrollToSection("lots")}
-            >
-              <Gavel className="mr-2 h-5 w-5" />
-              {language === "it" ? "Scopri le aste in corso" : "Explore Live Auctions"}
-            </Button>
-          </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white z-20"
-          aria-label="Scroll down for more content"
-        >
-          <ChevronDown size={24} />
-        </motion.div>
       </section>
 
+      {/* Featured Cars Section */}
       <section id="lots" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
@@ -450,103 +372,60 @@ function BrokerMotorsContent() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
               style={{ color: "var(--text)" }}
             >
-              {language === "it" ? "Auto in Evidenza" : "Featured Cars"}
+              {t("stock.title") as string}
             </h2>
-            <p className="text-lg sm:text-xl max-w-3xl mx-auto" style={{ color: "var(--muted)" }}>
-              {language === "it"
-                ? "Scopri le nostre supercar selezionate con opportunità di investimento frazionato"
-                : "Discover our curated supercars with fractional investment opportunities"}
-            </p>
           </motion.div>
 
+          {/* Cars Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {featuredCars.map((car, index) => (
+            {cars.map((car, index) => (
               <motion.div
                 key={car.id}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                className="card professional-hover cursor-pointer"
                 onClick={() => setSelectedCar(car)}
               >
-                {/* Car Image */}
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative">
                   <img
-                    src={car.image || "/placeholder.svg"}
+                    src={car.img || "/placeholder.svg"}
                     alt={car.title}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-64 object-cover rounded-t-lg"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = `/placeholder.svg?height=300&width=400&query=${encodeURIComponent(car.title + " luxury car studio photo")}`
+                      target.src = `/placeholder.svg?height=300&width=500&query=${encodeURIComponent(car.title + " luxury car studio photo")}`
                     }}
                   />
-
-                  {/* Status Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span
-                      className={`px-3 py-1 text-xs font-bold rounded-full ${
-                        car.badge === "LIVE"
-                          ? "bg-green-500 text-white"
-                          : car.badge === "NO RESERVE"
-                            ? "bg-red-500 text-white"
-                            : "bg-yellow-500 text-black"
-                      }`}
-                    >
-                      {car.badge}
-                    </span>
-                  </div>
-
-                  {/* Investment Return Badge */}
-                  <div className="absolute top-4 right-4">
-                    <span className="bg-black/80 text-white px-3 py-1 text-xs font-bold rounded-full">
-                      {car.investmentReturn} APY
-                    </span>
+                  <div className={`absolute top-4 left-4 badge badge-${car.badge}`}>
+                    {t(`badges.${car.badge}`) as string}
                   </div>
                 </div>
 
-                {/* Car Details */}
                 <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-xl font-bold mb-2" style={{ color: "var(--text)" }}>
+                    {car.title}
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                     <div>
-                      <h3 className="text-xl font-bold mb-2" style={{ color: "var(--text)" }}>
-                        {car.title}
-                      </h3>
-                      <p className="text-sm" style={{ color: "var(--muted)" }}>
-                        {car.year} • {car.mileage.toLocaleString()} km • {car.color}
-                      </p>
+                      <span className="font-medium" style={{ color: "var(--muted)" }}>
+                        {language === "it" ? "Anno:" : "Year:"}
+                      </span>
+                      <span className="ml-1" style={{ color: "var(--text)" }}>
+                        {car.year}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="font-medium" style={{ color: "var(--muted)" }}>
+                        {language === "it" ? "Km:" : "Miles:"}
+                      </span>
+                      <span className="ml-1" style={{ color: "var(--text)" }}>
+                        {car.mileage.toLocaleString()}
+                      </span>
                     </div>
                   </div>
-
-                  {/* Investment Info */}
-                  <div className="grid grid-cols-2 gap-4 mb-4 p-3 rounded-lg" style={{ background: "var(--bg)" }}>
-                    <div>
-                      <p className="text-xs font-medium" style={{ color: "var(--muted)" }}>
-                        {language === "it" ? "Rendita Mensile" : "Monthly Income"}
-                      </p>
-                      <p className="text-lg font-bold" style={{ color: "var(--accent)" }}>
-                        {car.monthlyIncome}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium" style={{ color: "var(--muted)" }}>
-                        {language === "it" ? "Offerta Attuale" : "Current Bid"}
-                      </p>
-                      <p className="text-lg font-bold" style={{ color: "var(--text)" }}>
-                        {car.currentBid}
-                      </p>
-                    </div>
-                  </div>
-
-                  <Button
-                    className="w-full btn--primary"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSelectedCar(car)
-                    }}
-                  >
-                    {language === "it" ? "Scopri di più" : "Learn More"}
-                  </Button>
+                  <Button className="w-full btn--primary focusable">{t("stock.more") as string}</Button>
                 </div>
               </motion.div>
             ))}
@@ -554,7 +433,8 @@ function BrokerMotorsContent() {
         </div>
       </section>
 
-      <section id="investment" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--card)" }}>
+      {/* Investment Section */}
+      <section id="investment" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--surface)" }}>
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -567,7 +447,7 @@ function BrokerMotorsContent() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
               style={{ color: "var(--text)" }}
             >
-              {language === "it" ? "Come funziona l'investimento in supercar?" : "How Does Supercar Investment Work?"}
+              {t("invest.title") as string}
             </h2>
           </motion.div>
 
@@ -576,7 +456,7 @@ function BrokerMotorsContent() {
             {[
               {
                 icon: PieChart,
-                title: language === "it" ? "Seleziona la quota" : "Choose Your Share",
+                title: t("invest.s1") as string,
                 description:
                   language === "it"
                     ? "Scegli l'auto e la percentuale da investire a partire da €1.000"
@@ -584,7 +464,7 @@ function BrokerMotorsContent() {
               },
               {
                 icon: FileText,
-                title: language === "it" ? "Firma digitale" : "Sign Digitally",
+                title: t("invest.s2") as string,
                 description:
                   language === "it"
                     ? "Tutto online, rapido e sicuro con verifica KYC completa"
@@ -592,7 +472,7 @@ function BrokerMotorsContent() {
               },
               {
                 icon: DollarSign,
-                title: language === "it" ? "Ricevi rendite mensili" : "Receive Monthly Income",
+                title: t("invest.s3") as string,
                 description:
                   language === "it"
                     ? "I profitti dall'uso e rivendita vengono distribuiti agli investitori"
@@ -633,14 +513,19 @@ function BrokerMotorsContent() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <Button size="lg" className="btn--primary h-14 text-lg font-semibold rounded-xl px-8">
+            <Button
+              size="lg"
+              className="btn--primary h-14 text-lg font-semibold rounded-xl px-8 focusable"
+              onClick={() => setShowROIModal(true)}
+            >
               <Calculator className="mr-2 h-5 w-5" />
-              {language === "it" ? "Calcola il tuo rendimento gratuito" : "Get Your Free Return Estimate"}
+              {t("invest.cta") as string}
             </Button>
           </motion.div>
         </div>
       </section>
 
+      {/* USP Section */}
       <section id="usp" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
@@ -700,7 +585,7 @@ function BrokerMotorsContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card p-6 sm:p-8 text-center hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                className="card professional-hover text-center p-6"
               >
                 <div className="flex justify-center mb-6">
                   <div
@@ -710,86 +595,9 @@ function BrokerMotorsContent() {
                     <item.icon className="w-8 h-8" style={{ color: "var(--accent)" }} />
                   </div>
                 </div>
-
-                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
-                  {item.title}
-                </h3>
-
-                <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
-                  {item.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Guarantees Section */}
-      <section className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--card)" }}>
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12 sm:mb-16 lg:mb-20"
-          >
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
-              style={{ color: "var(--text)" }}
-            >
-              {language === "it" ? "Sicurezza e trasparenza" : "Security and transparency"}
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: CheckCircle,
-                title: language === "it" ? "Ispezione completa 200+ punti" : "Complete 200+ point inspection",
-                description:
-                  language === "it"
-                    ? "Ogni veicolo viene ispezionato da esperti certificati con report dettagliato"
-                    : "Every vehicle is inspected by certified experts with detailed report",
-              },
-              {
-                icon: Shield,
-                title: language === "it" ? "Pagamenti sicuri con escrow" : "Secure payments with escrow",
-                description:
-                  language === "it"
-                    ? "Sistema di pagamento sicuro con escrow certificato e KYC/AML completo"
-                    : "Secure payment system with certified escrow and complete KYC/AML",
-              },
-              {
-                icon: Truck,
-                title: language === "it" ? "Trasporto protetto" : "Protected transport",
-                description:
-                  language === "it"
-                    ? "Trasporto assicurato in tutta Europa con copertura completa"
-                    : "Insured transport throughout Europe with full coverage",
-              },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className="card p-8 text-center hover:shadow-2xl transition-all duration-300"
-              >
-                <div className="flex justify-center mb-6">
-                  <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: "var(--accent)", opacity: 0.1 }}
-                  >
-                    <item.icon className="w-8 h-8" style={{ color: "var(--accent)" }} />
-                  </div>
-                </div>
-
                 <h3 className="text-xl font-bold mb-4" style={{ color: "var(--text)" }}>
                   {item.title}
                 </h3>
-
                 <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
                   {item.description}
                 </p>
@@ -799,255 +607,215 @@ function BrokerMotorsContent() {
         </div>
       </section>
 
-      <section id="sell" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
+      {/* Sell Section */}
+      <section id="sell" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--surface)" }}>
         <div className="container mx-auto px-4 sm:px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12 sm:mb-16 lg:mb-20"
-          >
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
-              style={{ color: "var(--text)" }}
-            >
-              {language === "it" ? "Vendi la tua auto con Broker Motors" : "Sell your car with Broker Motors"}
-            </h2>
-          </motion.div>
-
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            {/* Left Column - Process Steps */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Left Column - Content */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <div className="mb-8">
-                <h3 className="text-2xl sm:text-3xl font-bold mb-6" style={{ color: "var(--text)" }}>
-                  {language === "it" ? "Processo in 3 step" : "3-step process"}
-                </h3>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6" style={{ color: "var(--text)" }}>
+                {t("sell.title") as string}
+              </h2>
+              <p className="text-lg mb-8 leading-relaxed" style={{ color: "var(--muted)" }}>
+                {t("sell.stepsTitle") as string}
+              </p>
 
-                <div className="space-y-6">
-                  {[
-                    {
-                      step: "1",
-                      title: language === "it" ? "Inserisci dettagli" : "Enter details",
-                      description:
-                        language === "it"
-                          ? "Compila il form con i dettagli della tua auto"
-                          : "Fill out the form with your car details",
-                    },
-                    {
-                      step: "2",
-                      title: language === "it" ? "Valutazione esperti" : "Expert valuation",
-                      description:
-                        language === "it"
-                          ? "I nostri esperti valuteranno la tua auto in 24h"
-                          : "Our experts will evaluate your car within 24h",
-                    },
-                    {
-                      step: "3",
-                      title: language === "it" ? "Vai all'asta" : "Go to auction",
-                      description:
-                        language === "it"
-                          ? "La tua auto viene messa all'asta sulla nostra piattaforma"
-                          : "Your car is put up for auction on our platform",
-                    },
-                  ].map((item, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="flex items-start space-x-4"
+              {/* Steps */}
+              <div className="space-y-6">
+                {[
+                  {
+                    title: t("sell.s1") as string,
+                    description: language === "it" ? "Inserisci i dettagli della tua auto" : "Submit your car details",
+                  },
+                  {
+                    title: t("sell.s2") as string,
+                    description:
+                      language === "it"
+                        ? "I nostri esperti valuteranno la tua auto"
+                        : "Our experts will assess your car",
+                  },
+                  {
+                    title: t("sell.s3") as string,
+                    description: language === "it" ? "La tua auto andrà all'asta" : "Your car goes to auction",
+                  },
+                ].map((step, index) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+                      style={{ backgroundColor: "var(--accent)" }}
                     >
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0"
-                        style={{ backgroundColor: "var(--accent)" }}
-                      >
-                        {item.step}
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-semibold mb-2" style={{ color: "var(--text)" }}>
-                          {item.title}
-                        </h4>
-                        <p style={{ color: "var(--muted)" }}>{item.description}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
+                      <span className="text-sm font-bold" style={{ color: "var(--accent-contrast)" }}>
+                        {index + 1}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold mb-2" style={{ color: "var(--text)" }}>
+                        {step.title}
+                      </h3>
+                      <p className="text-base" style={{ color: "var(--muted)" }}>
+                        {step.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </motion.div>
 
-            {/* Right Column - Contact Form */}
+            {/* Right Column - Form */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
+              className="card p-6 sm:p-8"
             >
-              <div className="card p-8">
-                <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text)" }}>
-                  {language === "it" ? "Richiedi valutazione" : "Request valuation"}
-                </h3>
+              <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text)" }}>
+                {language === "it" ? "Richiedi valutazione" : "Request valuation"}
+              </h3>
 
-                <form className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
-                        {language === "it" ? "Nome" : "Name"}
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2"
-                        style={
-                          {
-                            background: "var(--bg)",
-                            borderColor: "var(--border)",
-                            color: "var(--text)",
-                            "--tw-ring-color": "var(--accent)",
-                          } as React.CSSProperties
-                        }
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        className="w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2"
-                        style={
-                          {
-                            background: "var(--bg)",
-                            borderColor: "var(--border)",
-                            color: "var(--text)",
-                            "--tw-ring-color": "var(--accent)",
-                          } as React.CSSProperties
-                        }
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
+              <form className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
-                      {language === "it" ? "Telefono" : "Phone"}
+                      {t("sell.form.name") as string}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border focusable"
+                      style={{
+                        background: "var(--bg)",
+                        borderColor: "var(--divider)",
+                        color: "var(--text)",
+                      }}
+                      placeholder={t("sell.form.name") as string}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                      {t("sell.form.email") as string}
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border focusable"
+                      style={{
+                        background: "var(--bg)",
+                        borderColor: "var(--divider)",
+                        color: "var(--text)",
+                      }}
+                      placeholder={t("sell.form.email") as string}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                      {t("sell.form.phone") as string}
                     </label>
                     <input
                       type="tel"
-                      className="w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2"
-                      style={
-                        {
-                          background: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                          "--tw-ring-color": "var(--accent)",
-                        } as React.CSSProperties
-                      }
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border focusable"
+                      style={{
+                        background: "var(--bg)",
+                        borderColor: "var(--divider)",
+                        color: "var(--text)",
+                      }}
+                      placeholder={t("sell.form.phone") as string}
                     />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
-                      {language === "it" ? "Modello" : "Model"}
+                      {t("sell.form.car") as string}
                     </label>
                     <input
                       type="text"
-                      placeholder={language === "it" ? "Marca/Modello/Anno" : "Make/Model/Year"}
-                      className="w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2"
-                      style={
-                        {
-                          background: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                          "--tw-ring-color": "var(--accent)",
-                        } as React.CSSProperties
-                      }
                       value={formData.car}
                       onChange={(e) => setFormData({ ...formData, car: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border focusable"
+                      style={{
+                        background: "var(--bg)",
+                        borderColor: "var(--divider)",
+                        color: "var(--text)",
+                      }}
+                      placeholder={t("sell.form.car") as string}
                     />
                   </div>
+                </div>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
-                      {language === "it" ? "Chilometraggio" : "Mileage"}
+                      {t("sell.form.km") as string}
                     </label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2"
-                      style={
-                        {
-                          background: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                          "--tw-ring-color": "var(--accent)",
-                        } as React.CSSProperties
-                      }
-                      value={formData.mileage}
-                      onChange={(e) => setFormData({ ...formData, mileage: e.target.value })}
+                      value={formData.km}
+                      onChange={(e) => setFormData({ ...formData, km: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border focusable"
+                      style={{
+                        background: "var(--bg)",
+                        borderColor: "var(--divider)",
+                        color: "var(--text)",
+                      }}
+                      placeholder={t("sell.form.km") as string}
                     />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
-                      {language === "it" ? "Link foto/video" : "Photos/Video link"}
+                      {t("sell.form.year") as string}
                     </label>
                     <input
-                      type="url"
-                      className="w-full px-4 py-3 rounded-lg border transition-colors focus:outline-none focus:ring-2"
-                      style={
-                        {
-                          background: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                          "--tw-ring-color": "var(--accent)",
-                        } as React.CSSProperties
-                      }
-                      value={formData.media}
-                      onChange={(e) => setFormData({ ...formData, media: e.target.value })}
+                      type="text"
+                      value={formData.year}
+                      onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border focusable"
+                      style={{
+                        background: "var(--bg)",
+                        borderColor: "var(--divider)",
+                        color: "var(--text)",
+                      }}
+                      placeholder={t("sell.form.year") as string}
                     />
                   </div>
+                </div>
 
-                  <div className="flex items-start space-x-3">
-                    <input
-                      type="checkbox"
-                      id="privacy"
-                      className="mt-1"
-                      checked={formData.privacy}
-                      onChange={(e) => setFormData({ ...formData, privacy: e.target.checked })}
-                    />
-                    <label htmlFor="privacy" className="text-sm" style={{ color: "var(--muted)" }}>
-                      {language === "it"
-                        ? "Acconsento al trattamento dei dati personali secondo la Privacy Policy"
-                        : "I consent to the processing of personal data according to the Privacy Policy"}
-                    </label>
-                  </div>
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="checkbox"
+                    id="privacy"
+                    checked={formData.privacy}
+                    onChange={(e) => setFormData({ ...formData, privacy: e.target.checked })}
+                    className="mt-1 focusable"
+                  />
+                  <label htmlFor="privacy" className="text-sm" style={{ color: "var(--muted)" }}>
+                    {language === "it"
+                      ? "Acconsento al trattamento dei dati personali secondo la Privacy Policy"
+                      : "I consent to the processing of personal data according to the Privacy Policy"}
+                  </label>
+                </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full btn--primary h-12 text-lg font-semibold"
-                    disabled={!formData.privacy}
-                  >
-                    {language === "it" ? "Richiedi valutazione" : "Request valuation"}
-                  </Button>
-                </form>
-              </div>
+                <Button className="w-full btn--primary h-12 text-lg font-semibold focusable">
+                  {t("sell.form.submit") as string}
+                </Button>
+              </form>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Insights/Blog Section */}
-      <section className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--card)" }}>
+      {/* Insights Section */}
+      <section className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -1060,36 +828,15 @@ function BrokerMotorsContent() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
               style={{ color: "var(--text)" }}
             >
-              Insights
+              {t("insights.title") as string}
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[
-              {
-                title: language === "it" ? "Tendenze mercato auto di lusso 2025" : "Luxury Car Market Trends 2025",
-                excerpt:
-                  language === "it"
-                    ? "Analisi completa del mercato delle supercar e opportunità di investimento"
-                    : "Complete analysis of the supercar market and investment opportunities",
-              },
-              {
-                title:
-                  language === "it"
-                    ? "Guida aste: come partecipare con successo"
-                    : "Auction Guide: How to Bid Successfully",
-                excerpt:
-                  language === "it"
-                    ? "Strategie e consigli per massimizzare le tue possibilità di vincita"
-                    : "Strategies and tips to maximize your chances of winning",
-              },
-              {
-                title: language === "it" ? "Normative e tasse su import/export" : "Import & Tax Regulations",
-                excerpt:
-                  language === "it"
-                    ? "Tutto quello che devi sapere su tasse e normative per l'import/export"
-                    : "Everything you need to know about taxes and regulations for import/export",
-              },
+              { title: t("insights.a1") as string, icon: TrendingUp },
+              { title: t("insights.a2") as string, icon: Gavel },
+              { title: t("insights.a3") as string, icon: FileText },
             ].map((article, index) => (
               <motion.div
                 key={index}
@@ -1097,27 +844,23 @@ function BrokerMotorsContent() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card p-6 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                className="card professional-hover p-6 cursor-pointer"
               >
                 <div className="flex items-center mb-4">
-                  <BookOpen className="w-6 h-6 mr-3" style={{ color: "var(--accent)" }} />
-                  <span className="text-sm font-medium" style={{ color: "var(--accent)" }}>
-                    {language === "it" ? "Articolo" : "Article"}
-                  </span>
+                  <article.icon className="w-6 h-6 mr-3" style={{ color: "var(--accent)" }} />
+                  <h3 className="text-lg font-bold" style={{ color: "var(--text)" }}>
+                    {article.title}
+                  </h3>
                 </div>
-
-                <h3 className="text-xl font-bold mb-3" style={{ color: "var(--text)" }}>
-                  {article.title}
-                </h3>
-
                 <p className="text-base mb-4" style={{ color: "var(--muted)" }}>
-                  {article.excerpt}
+                  {language === "it"
+                    ? "Scopri le ultime tendenze e strategie per massimizzare i tuoi investimenti."
+                    : "Discover the latest trends and strategies to maximize your investments."}
                 </p>
-
-                <div className="flex items-center text-sm" style={{ color: "var(--accent)" }}>
-                  <span>{language === "it" ? "Leggi di più" : "Read more"}</span>
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </div>
+                <Button variant="outline" className="btn--ghost focusable bg-transparent">
+                  <ArrowRight className="w-4 h-4 mr-2" />
+                  {language === "it" ? "Leggi di più" : "Read more"}
+                </Button>
               </motion.div>
             ))}
           </div>
@@ -1125,7 +868,7 @@ function BrokerMotorsContent() {
       </section>
 
       {/* FAQ Section */}
-      <section id="contact" className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
+      <section className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--surface)" }}>
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -1138,52 +881,51 @@ function BrokerMotorsContent() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
               style={{ color: "var(--text)" }}
             >
-              FAQ
+              {t("faq.title") as string}
             </h2>
           </motion.div>
 
-          <div className="max-w-4xl mx-auto space-y-4">
-            {faqItems.map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="card overflow-hidden"
-              >
-                <button
-                  className="w-full px-6 py-4 text-left font-semibold flex justify-between items-center hover:opacity-80 transition-colors"
-                  style={{ color: "var(--text)" }}
-                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+          <div className="max-w-3xl mx-auto space-y-4">
+            {Array.isArray(t("faq.items")) &&
+              (t("faq.items") as any[]).map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="faq-item rounded-lg"
                 >
-                  {faq.question}
-                  <ChevronDown
-                    className={`w-5 h-5 transition-transform ${openFaqIndex === index ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {openFaqIndex === index && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="px-6 py-4 border-t"
-                    style={{ borderColor: "var(--border)" }}
+                  <button
+                    onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                    className="w-full px-6 py-4 text-left flex justify-between items-center focusable"
+                    role="button"
+                    aria-expanded={openFaqIndex === index}
+                    aria-controls={`faq-${index}`}
                   >
-                    <p style={{ color: "var(--muted)" }}>{faq.answer}</p>
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
+                    <span className="text-lg font-semibold" style={{ color: "var(--text)" }}>
+                      {item.q}
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 transition-transform ${openFaqIndex === index ? "rotate-180" : ""}`}
+                      style={{ color: "var(--accent)" }}
+                    />
+                  </button>
+                  {openFaqIndex === index && (
+                    <div id={`faq-${index}`} className="px-6 pb-4">
+                      <p className="text-base leading-relaxed" style={{ color: "var(--muted)" }}>
+                        {item.a}
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
           </div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section
-        className="py-16 sm:py-24 lg:py-32"
-        style={{ background: "var(--accent)", color: "var(--accent-contrast)" }}
-      >
+      <section className="py-16 sm:py-24 lg:py-32" style={{ background: "var(--bg)" }}>
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -1191,30 +933,19 @@ function BrokerMotorsContent() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
-              {language === "it"
-                ? "Unisciti a migliaia di investitori e collezionisti che hanno scelto Broker Motors"
-                : "Join thousands of investors and collectors who have chosen Broker Motors"}
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8" style={{ color: "var(--text)" }}>
+              {t("ctaFinal.title") as string}
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
-              {language === "it"
-                ? "Inizia il tuo viaggio nel mondo degli investimenti in supercar oggi stesso"
-                : "Start your journey in the world of supercar investments today"}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-2xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 size="lg"
-                variant="outline"
-                className="h-14 text-lg border-white/30 text-white hover:bg-white/10 rounded-xl transition-all duration-300 hover:scale-105 bg-transparent backdrop-blur-sm flex-1"
+                className="btn--primary h-14 text-lg font-semibold rounded-xl px-8 focusable"
                 onClick={() => scrollToSection("lots")}
               >
-                {language === "it" ? "Scopri le aste" : "Explore Auctions"}
+                {t("ctaFinal.cta1") as string}
               </Button>
-              <Button
-                size="lg"
-                className="h-14 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 shadow-lg flex-1 bg-white text-black hover:bg-gray-100"
-              >
-                {language === "it" ? "Iscriviti ora" : "Register Now"}
+              <Button size="lg" className="btn--ghost h-14 text-lg font-semibold rounded-xl px-8 focusable">
+                {t("ctaFinal.cta2") as string}
               </Button>
             </div>
           </motion.div>
@@ -1222,16 +953,16 @@ function BrokerMotorsContent() {
       </section>
 
       {/* Footer */}
-      <footer className="py-16 sm:py-20" style={{ background: "var(--card)" }}>
+      <footer id="contact" className="footer py-16 border-t" style={{ borderColor: "var(--divider)" }}>
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
-            {/* Logo and Description */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Brand */}
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
                 <img
-                  src="/brand/broker-motors-big.png"
+                  src="/brand/broker-motors-logo.png"
                   alt="Broker Motors"
-                  className="h-12 w-auto"
+                  className="h-10 w-auto"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
                     target.style.display = "none"
@@ -1239,22 +970,17 @@ function BrokerMotorsContent() {
                     if (fallback) fallback.style.display = "block"
                   }}
                 />
-                <div className="hidden font-bold text-2xl" style={{ color: "var(--text)" }}>
+                <div className="hidden font-bold text-xl" style={{ color: "var(--text)" }}>
                   BROKER MOTORS
                 </div>
               </div>
-
-              <p className="text-base leading-relaxed mb-6 max-w-md" style={{ color: "var(--muted)" }}>
-                {language === "it"
-                  ? "La piattaforma leader per aste e investimenti in auto di lusso. Selezione curata, trasparenza totale, pagamenti sicuri."
-                  : "The leading platform for luxury car auctions and investments. Curated selection, total transparency, secure payments."}
+              <p className="text-base leading-relaxed mb-6" style={{ color: "var(--muted)" }}>
+                {t("footer.tagline") as string}
               </p>
-
-              {/* Social Links */}
               <div className="flex space-x-4">
                 <a
                   href="#"
-                  className="p-2 rounded-lg transition-colors hover:opacity-80"
+                  className="p-2 rounded-lg transition-colors hover:opacity-80 focusable"
                   style={{ color: "var(--muted)" }}
                   aria-label="YouTube"
                 >
@@ -1262,7 +988,7 @@ function BrokerMotorsContent() {
                 </a>
                 <a
                   href="#"
-                  className="p-2 rounded-lg transition-colors hover:opacity-80"
+                  className="p-2 rounded-lg transition-colors hover:opacity-80 focusable"
                   style={{ color: "var(--muted)" }}
                   aria-label="Instagram"
                 >
@@ -1270,7 +996,7 @@ function BrokerMotorsContent() {
                 </a>
                 <a
                   href="#"
-                  className="p-2 rounded-lg transition-colors hover:opacity-80"
+                  className="p-2 rounded-lg transition-colors hover:opacity-80 focusable"
                   style={{ color: "var(--muted)" }}
                   aria-label="LinkedIn"
                 >
@@ -1279,20 +1005,20 @@ function BrokerMotorsContent() {
               </div>
             </div>
 
-            {/* Contact Info */}
+            {/* Contact */}
             <div>
               <h3 className="text-lg font-bold mb-4" style={{ color: "var(--text)" }}>
-                {language === "it" ? "Contatti" : "Contact"}
+                {t("footer.contact") as string}
               </h3>
               <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Phone size={16} style={{ color: "var(--accent)" }} />
+                <div className="flex items-start space-x-3">
+                  <Phone size={16} className="mt-1" style={{ color: "var(--accent)" }} />
                   <span className="text-sm" style={{ color: "var(--muted)" }}>
                     +44 20 7123 4567
                   </span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Mail size={16} style={{ color: "var(--accent)" }} />
+                <div className="flex items-start space-x-3">
+                  <Mail size={16} className="mt-1" style={{ color: "var(--accent)" }} />
                   <span className="text-sm" style={{ color: "var(--muted)" }}>
                     info@brokermotors.com
                   </span>
@@ -1311,36 +1037,30 @@ function BrokerMotorsContent() {
             {/* Legal Links */}
             <div>
               <h3 className="text-lg font-bold mb-4" style={{ color: "var(--text)" }}>
-                Legal
+                {t("footer.legal") as string}
               </h3>
               <div className="space-y-2">
                 <button
                   onClick={() => setShowPrivacyModal(true)}
-                  className="block text-sm transition-colors hover:opacity-80"
-                  style={{ color: "var(--muted)" }}
+                  className="block text-sm transition-colors hover:opacity-80 link focusable"
                 >
-                  Privacy Policy
+                  {t("footer.privacy") as string}
                 </button>
-                <a
-                  href="#"
-                  className="block text-sm transition-colors hover:opacity-80"
-                  style={{ color: "var(--muted)" }}
-                >
-                  Cookie Policy
+                <a href="#" className="block text-sm transition-colors hover:opacity-80 link focusable">
+                  {t("footer.cookies") as string}
                 </a>
-                <a
-                  href="#"
-                  className="block text-sm transition-colors hover:opacity-80"
-                  style={{ color: "var(--muted)" }}
-                >
-                  {language === "it" ? "Termini & Condizioni" : "Terms & Conditions"}
+                <a href="#" className="block text-sm transition-colors hover:opacity-80 link focusable">
+                  {t("footer.terms") as string}
+                </a>
+                <a href="#" className="block text-sm transition-colors hover:opacity-80 link focusable">
+                  {t("footer.complaints") as string}
                 </a>
               </div>
             </div>
           </div>
 
           {/* Copyright */}
-          <div className="border-t pt-8 mt-12" style={{ borderColor: "var(--border)" }}>
+          <div className="border-t pt-8" style={{ borderColor: "var(--divider)" }}>
             <div className="flex flex-col sm:flex-row justify-between items-center">
               <p className="text-sm" style={{ color: "var(--muted)" }}>
                 © 2025 Broker Motors. All rights reserved.
@@ -1353,13 +1073,111 @@ function BrokerMotorsContent() {
         </div>
       </footer>
 
-      {/* Car Detail Modal */}
-      {selectedCar && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+      {showROIModal && (
+        <div className="fixed inset-0 modal-overlay flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="modal-content max-w-md w-full"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <h3 className="text-2xl font-bold" style={{ color: "var(--text)" }}>
+                  {t("roi.title") as string}
+                </h3>
+                <button
+                  onClick={() => setShowROIModal(false)}
+                  className="p-2 hover:opacity-80 transition-colors focusable"
+                  style={{ color: "var(--muted)" }}
+                  aria-label={t("modal.close") as string}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                    {t("roi.amount") as string}
+                  </label>
+                  <input
+                    type="number"
+                    min="1000"
+                    step="100"
+                    value={roiData.amount}
+                    onChange={(e) => setRoiData({ ...roiData, amount: Number(e.target.value) })}
+                    className="w-full px-4 py-3 rounded-lg border focusable"
+                    style={{
+                      background: "var(--bg)",
+                      borderColor: "var(--divider)",
+                      color: "var(--text)",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                    {t("roi.months") as string}
+                  </label>
+                  <input
+                    type="number"
+                    min="3"
+                    max="36"
+                    value={roiData.months}
+                    onChange={(e) => setRoiData({ ...roiData, months: Number(e.target.value) })}
+                    className="w-full px-4 py-3 rounded-lg border focusable"
+                    style={{
+                      background: "var(--bg)",
+                      borderColor: "var(--divider)",
+                      color: "var(--text)",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: "var(--text)" }}>
+                    {t("roi.apr") as string}
+                  </label>
+                  <input
+                    type="number"
+                    min="5"
+                    max="18"
+                    step="0.1"
+                    value={roiData.apr}
+                    onChange={(e) => setRoiData({ ...roiData, apr: Number(e.target.value) })}
+                    className="w-full px-4 py-3 rounded-lg border focusable"
+                    style={{
+                      background: "var(--bg)",
+                      borderColor: "var(--divider)",
+                      color: "var(--text)",
+                    }}
+                  />
+                </div>
+
+                <div className="bg-opacity-10 p-4 rounded-lg" style={{ backgroundColor: "var(--accent)" }}>
+                  <h4 className="text-lg font-bold mb-2" style={{ color: "var(--text)" }}>
+                    {t("roi.estimation") as string}
+                  </h4>
+                  <p className="text-2xl font-bold" style={{ color: "var(--accent)" }}>
+                    {formatCurrency(calculateROI().monthlyIncome)}
+                  </p>
+                </div>
+
+                <p className="text-xs" style={{ color: "var(--muted)" }}>
+                  {t("roi.disclaimer") as string}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {selectedCar && (
+        <div className="fixed inset-0 modal-overlay flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="modal-content max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           >
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
@@ -1368,23 +1186,51 @@ function BrokerMotorsContent() {
                 </h3>
                 <button
                   onClick={() => setSelectedCar(null)}
-                  className="p-2 hover:opacity-80 transition-colors"
+                  className="p-2 hover:opacity-80 transition-colors focusable"
                   style={{ color: "var(--muted)" }}
+                  aria-label={t("modal.close") as string}
                 >
-                  ×
+                  <X size={20} />
                 </button>
               </div>
 
-              <img
-                src={selectedCar.image || "/placeholder.svg"}
-                alt={selectedCar.title}
-                className="w-full h-64 object-cover rounded-lg mb-6"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement
-                  target.src = `/placeholder.svg?height=300&width=500&query=${encodeURIComponent(selectedCar.title + " luxury car studio photo")}`
-                }}
-              />
+              {/* Gallery */}
+              <div className="relative mb-6">
+                <img
+                  src={selectedCar.gallery[currentImageIndex] || selectedCar.img}
+                  alt={selectedCar.title}
+                  className="w-full h-64 object-cover rounded-lg"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = `/placeholder.svg?height=300&width=500&query=${encodeURIComponent(selectedCar.title + " luxury car studio photo")}`
+                  }}
+                />
+                {selectedCar.gallery.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setCurrentImageIndex(Math.max(0, currentImageIndex - 1))}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 focusable"
+                      disabled={currentImageIndex === 0}
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    <button
+                      onClick={() =>
+                        setCurrentImageIndex(Math.min(selectedCar.gallery.length - 1, currentImageIndex + 1))
+                      }
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 focusable"
+                      disabled={currentImageIndex === selectedCar.gallery.length - 1}
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </>
+                )}
+                <div className={`absolute top-4 left-4 badge badge-${selectedCar.badge}`}>
+                  {t(`badges.${selectedCar.badge}`) as string}
+                </div>
+              </div>
 
+              {/* Car Details */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <p className="text-sm font-medium" style={{ color: "var(--muted)" }}>
@@ -1410,22 +1256,44 @@ function BrokerMotorsContent() {
                     {selectedCar.color}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: "var(--muted)" }}>
-                    {language === "it" ? "Rendimento APY" : "APY Return"}
-                  </p>
-                  <p className="text-lg font-bold" style={{ color: "var(--accent)" }}>
-                    {selectedCar.investmentReturn}
-                  </p>
-                </div>
               </div>
 
+              {/* Specifications */}
+              <div className="mb-6">
+                <h4 className="text-lg font-bold mb-3" style={{ color: "var(--text)" }}>
+                  {language === "it" ? "Specifiche" : "Specifications"}
+                </h4>
+                <ul className="space-y-2">
+                  {selectedCar.spec.map((spec: string, index: number) => (
+                    <li key={index} className="flex items-center space-x-2">
+                      <CheckCircle size={16} style={{ color: "var(--accent)" }} />
+                      <span className="text-sm" style={{ color: "var(--muted)" }}>
+                        {spec}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Action Buttons */}
               <div className="flex gap-4">
-                <Button className="btn--primary flex-1" onClick={() => scrollToSection("investment")}>
+                <Button
+                  className="btn--primary flex-1 focusable"
+                  onClick={() => {
+                    setSelectedCar(null)
+                    scrollToSection("investment")
+                  }}
+                >
                   <TrendingUp className="mr-2 h-4 w-4" />
                   {language === "it" ? "Investi ora" : "Invest Now"}
                 </Button>
-                <Button variant="outline" className="flex-1 bg-transparent" onClick={() => scrollToSection("lots")}>
+                <Button
+                  className="btn--ghost flex-1 focusable"
+                  onClick={() => {
+                    setSelectedCar(null)
+                    scrollToSection("lots")
+                  }}
+                >
                   <Gavel className="mr-2 h-4 w-4" />
                   {language === "it" ? "Fai un'offerta" : "Place Bid"}
                 </Button>
@@ -1437,23 +1305,24 @@ function BrokerMotorsContent() {
 
       {/* Privacy Modal */}
       {showPrivacyModal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 modal-overlay flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="modal-content max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           >
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl font-bold" style={{ color: "var(--text)" }}>
-                  Privacy Policy
+                  {t("footer.privacy") as string}
                 </h3>
                 <button
                   onClick={() => setShowPrivacyModal(false)}
-                  className="p-2 hover:opacity-80 transition-colors"
+                  className="p-2 hover:opacity-80 transition-colors focusable"
                   style={{ color: "var(--muted)" }}
+                  aria-label={t("modal.close") as string}
                 >
-                  ×
+                  <X size={20} />
                 </button>
               </div>
 
