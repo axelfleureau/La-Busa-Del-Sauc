@@ -66,20 +66,19 @@ function RestaurantContent() {
   const menuItems = {
     antipasti: [
       { name: t("menu.items.tagliere"), price: "€15,00" },
-      { name: t("menu.items.formaggi"), price: "€14,00" },
+      { name: t("menu.items.formaggi"), price: "€15,00" },
       { name: t("menu.items.tartare"), price: "€18,00" },
-      { name: t("menu.items.gazpacho"), price: "€13,00" },
+      { name: t("menu.items.flan"), price: "€13,00" },
     ],
     primi: [
-      { name: t("menu.items.rigatoni"), price: "€14,00" },
+      { name: t("menu.items.pappardelle"), price: "€14,00" },
       { name: t("menu.items.gnocchi"), price: "€14,00" },
-      { name: t("menu.items.tagliolino"), price: "€14,00" },
+      { name: t("menu.items.zuppa"), price: "€10,00" },
     ],
     secondi: [
-      { name: t("menu.items.cervo"), price: "€16,00" },
+      { name: t("menu.items.cervo"), price: "€17,00" },
       { name: t("menu.items.frico"), price: "€15,00" },
-      { name: t("menu.items.filetto"), price: "€30,00" },
-      { name: t("menu.items.ribs"), price: "€19,00" },
+      { name: t("menu.items.tagliata"), price: "€22,00" },
     ],
     contorni: [
       { name: t("menu.items.patate"), price: "€5,00" },
@@ -289,7 +288,7 @@ function RestaurantContent() {
               }`}
               onClick={() =>
                 window.open(
-                  "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
+                  "/menu.pdf",
                   "_blank",
                 )
               }
@@ -385,7 +384,7 @@ function RestaurantContent() {
                     }`}
                     onClick={() =>
                       window.open(
-                        "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
+                        "/menu.pdf",
                         "_blank",
                       )
                     }
@@ -457,7 +456,7 @@ function RestaurantContent() {
               }`}
               onClick={() =>
                 window.open(
-                  "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dead8c0ad9a0caa75331_Busadelsauc.pdf",
+                  "/menu.pdf",
                   "_blank",
                 )
               }
