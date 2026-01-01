@@ -19,7 +19,7 @@ import { HeroSlideshow } from "@/components/hero-slideshow"
 import { ThemeProvider, useTheme } from "@/components/theme-provider"
 import { LanguageProvider, useLanguage, languages } from "@/components/language-provider"
 
-function RestaurantContent() {
+function RestaurantContent() { 
   const [activeSection, setActiveSection] = useState("home")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
