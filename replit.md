@@ -33,6 +33,7 @@ A Next.js 15 web application with React 19, Tailwind CSS 4, and Framer Motion fo
 - `allowedDevOrigins` is set in next.config.mjs for Replit proxy support
 
 ## Recent Changes
+- 2026-03-06: Added custom cursor component (circle following mouse on desktop, hidden on touch devices)
 - 2026-01-01: Updated menu section with Winter 2026 menu data
 - 2026-01-01: Updated menu PDF buttons to link to /menu.pdf
 - 2026-01-01: Added menu.pdf file to public folder

@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { HeroSlideshow } from "@/components/hero-slideshow"
+import { CustomCursor } from "@/components/custom-cursor"
 import { ThemeProvider, useTheme } from "@/components/theme-provider"
 import { LanguageProvider, useLanguage, languages } from "@/components/language-provider"
 
@@ -116,6 +117,7 @@ function RestaurantContent() {
 
   return (
     <div className="min-h-screen bg-background">
+      <CustomCursor />
       {/* Completely hide all slideshow indicators on mobile */}
       <style jsx global>{`
         @media (max-width: 768px) {
