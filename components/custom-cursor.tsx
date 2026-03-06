@@ -1,38 +1,62 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { motion, useMotionValue, useSpring } from "framer-motion"
+import { useEffect, useRef, useState, useCallback } from "react"
 import { useTheme } from "@/components/theme-provider"
 
-const CLICKABLE_SELECTOR = 'a, button, [role="button"], input, select, textarea, label, [onclick]'
+const CLICKABLE_SELECTOR = 'a, button, [role="button"], input, select, textarea, label'
 
 export function CustomCursor() {
   const { theme } = useTheme()
-  const [isVisible, setIsVisible] = useState(false)
-  const [isPointer, setIsPointer] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(true)
-  const cursorX = useMotionValue(-100)
-  const cursorY = useMotionValue(-100)
+  const [enabled, setEnabled] = useState(false)
+  const outerRef = useRef<HTMLDivElement>(null)
+  const innerRef = useRef<HTMLDivElement>(null)
+  const pos = useRef({ x: -100, y: -100 })
+  const smoothPos = useRef({ x: -100, y: -100 })
+  const visible = useRef(false)
+  const hovering = useRef(false)
+  const rafId = useRef<number>(0)
 
-  const springConfig = { damping: 25, stiffness: 300, mass: 0.5 }
-  const smoothX = useSpring(cursorX, springConfig)
-  const smoothY = useSpring(cursorY, springConfig)
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+
+  const animate = useCallback(() => {
+    smoothPos.current.x = lerp(smoothPos.current.x, pos.current.x, 0.15)
+    smoothPos.current.y = lerp(smoothPos.current.y, pos.current.y, 0.15)
+
+    const outer = outerRef.current
+    const inner = innerRef.current
+    if (outer && inner) {
+      const opacity = visible.current ? 1 : 0
+      const size = hovering.current ? 40 : 20
+
+      outer.style.transform = `translate(${smoothPos.current.x - size / 2}px, ${smoothPos.current.y - size / 2}px)`
+      outer.style.width = `${size}px`
+      outer.style.height = `${size}px`
+      outer.style.opacity = String(opacity * 0.8)
+      outer.style.backgroundColor = hovering.current ? "transparent" : "var(--cursor-color)"
+      outer.style.border = hovering.current ? "2px solid var(--cursor-color)" : "none"
+
+      inner.style.transform = `translate(${pos.current.x - 2.5}px, ${pos.current.y - 2.5}px)`
+      inner.style.opacity = String(opacity)
+    }
+
+    rafId.current = requestAnimationFrame(animate)
+  }, [])
 
   useEffect(() => {
-    const hasTouch = window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window
-    setIsTouchDevice(hasTouch)
-    if (hasTouch) return
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches
+    if (!hasFinePointer) return
 
-    const hide = () => setIsVisible(false)
-    const show = () => setIsVisible(true)
+    setEnabled(true)
+
+    const hide = () => { visible.current = false }
 
     const onMouseMove = (e: MouseEvent) => {
-      cursorX.set(e.clientX)
-      cursorY.set(e.clientY)
-      setIsVisible(true)
+      pos.current.x = e.clientX
+      pos.current.y = e.clientY
+      visible.current = true
 
       const target = e.target as HTMLElement
-      setIsPointer(target.closest(CLICKABLE_SELECTOR) !== null)
+      hovering.current = target.closest(CLICKABLE_SELECTOR) !== null
     }
 
     const onMouseOut = (e: MouseEvent) => {
@@ -43,24 +67,25 @@ export function CustomCursor() {
       if (document.hidden) hide()
     }
 
-    document.addEventListener("mousemove", onMouseMove)
+    rafId.current = requestAnimationFrame(animate)
+
+    document.addEventListener("mousemove", onMouseMove, { passive: true })
     document.addEventListener("mouseleave", hide)
-    document.addEventListener("mouseenter", show)
     document.addEventListener("mouseout", onMouseOut)
     document.addEventListener("visibilitychange", onVisibilityChange)
     window.addEventListener("blur", hide)
 
     return () => {
+      cancelAnimationFrame(rafId.current)
       document.removeEventListener("mousemove", onMouseMove)
       document.removeEventListener("mouseleave", hide)
-      document.removeEventListener("mouseenter", show)
       document.removeEventListener("mouseout", onMouseOut)
       document.removeEventListener("visibilitychange", onVisibilityChange)
       window.removeEventListener("blur", hide)
     }
-  }, [cursorX, cursorY])
+  }, [animate])
 
-  if (isTouchDevice) return null
+  if (!enabled) return null
 
   const accentColor = theme === "dark" ? "#ff0092" : "#f59e0b"
 
@@ -69,44 +94,44 @@ export function CustomCursor() {
       <style jsx global>{`
         @media (pointer: fine) {
           html, body, a, button, input, select, textarea, label,
-          [role="button"], [onclick] {
+          [role="button"] {
             cursor: none !important;
           }
         }
       `}</style>
-      <motion.div
+      <div
+        ref={outerRef}
         style={{
           position: "fixed",
-          left: smoothX,
-          top: smoothY,
-          translateX: "-50%",
-          translateY: "-50%",
+          top: 0,
+          left: 0,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          backgroundColor: accentColor,
           pointerEvents: "none",
           zIndex: 9999,
-          width: isPointer ? 40 : 20,
-          height: isPointer ? 40 : 20,
-          borderRadius: "50%",
-          backgroundColor: isPointer ? "transparent" : accentColor,
-          border: isPointer ? `2px solid ${accentColor}` : "none",
-          opacity: isVisible ? 0.8 : 0,
+          opacity: 0,
           mixBlendMode: "difference",
+          willChange: "transform, width, height, opacity",
+          transition: "width 0.2s, height 0.2s, background-color 0.2s, border 0.2s",
+          ["--cursor-color" as string]: accentColor,
         }}
-        transition={{ width: { duration: 0.2 }, height: { duration: 0.2 }, opacity: { duration: 0.15 } }}
       />
-      <motion.div
+      <div
+        ref={innerRef}
         style={{
           position: "fixed",
-          left: cursorX,
-          top: cursorY,
-          translateX: "-50%",
-          translateY: "-50%",
-          pointerEvents: "none",
-          zIndex: 10000,
+          top: 0,
+          left: 0,
           width: 5,
           height: 5,
           borderRadius: "50%",
           backgroundColor: accentColor,
-          opacity: isVisible ? 1 : 0,
+          pointerEvents: "none",
+          zIndex: 10000,
+          opacity: 0,
+          willChange: "transform, opacity",
         }}
       />
     </>
