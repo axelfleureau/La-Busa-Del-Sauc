@@ -50,6 +50,7 @@ function RestaurantContent() {
   const currentMinutes = currentHour * 60 + currentMinute
   const isOpenDay = currentDay === 0 || currentDay >= 3
   const isOpenNow = isOpenDay && currentMinutes >= 10 * 60 + 30 && currentMinutes < 22 * 60 + 30
+  const currentYear = now.getFullYear()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -924,7 +925,7 @@ function RestaurantContent() {
                 Privacy & Cookie Policy
               </button>
             </div>
-            <p className="mt-2 text-xs sm:text-sm">© 2025 La Busa del Sauc. Tutti i diritti riservati.</p>
+            <p className="mt-2 text-xs sm:text-sm">{t("footer.rights").replace("2024", String(currentYear))}</p>
           </div>
         </div>
       </footer>
