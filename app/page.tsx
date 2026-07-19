@@ -97,17 +97,19 @@ function RestaurantContent() {
       { name: t("menu.items.tagliere"), price: "€15,00" },
       { name: t("menu.items.formaggi"), price: "€15,00" },
       { name: t("menu.items.tartare"), price: "€18,00" },
-      { name: t("menu.items.flan"), price: "€13,00" },
+      { name: t("menu.items.gazpacho"), price: "€13,00" },
     ],
     primi: [
       { name: t("menu.items.pappardelle"), price: "€14,00" },
       { name: t("menu.items.gnocchi"), price: "€14,00" },
-      { name: t("menu.items.zuppa"), price: "€10,00" },
+      { name: t("menu.items.zuppa_cipolle"), price: "€12,00" },
+      { name: t("menu.items.parmigiana"), price: "€13,00" },
     ],
     secondi: [
       { name: t("menu.items.cervo"), price: "€17,00" },
       { name: t("menu.items.frico"), price: "€15,00" },
       { name: t("menu.items.tagliata"), price: "€22,00" },
+      { name: t("menu.items.ribs"), price: "€20,00" },
     ],
     contorni: [
       { name: t("menu.items.patate"), price: "€5,00" },
@@ -115,11 +117,42 @@ function RestaurantContent() {
       { name: t("menu.items.spinaci"), price: "€5,00" },
       { name: t("menu.items.insalata"), price: "€7,00" },
     ],
+    dessert: [
+      { name: t("menu.items.dessert"), price: t("menu.price.from6") },
+      { name: t("menu.items.coperto"), price: "€2,50" },
+    ],
+    bambini: [
+      { name: t("menu.items.pasta_pomodoro"), price: "€10,00" },
+      { name: t("menu.items.wurstel_patate"), price: "€12,00" },
+      { name: t("menu.items.cotoletta_patate"), price: "€14,00" },
+    ],
     bevande: [
+      { name: t("menu.items.acqua"), price: "€1,50" },
+      { name: t("menu.items.succhi"), price: "€3,50" },
+      { name: t("menu.items.coca"), price: "€3,50" },
+      { name: t("menu.items.fanta"), price: "€3,50" },
+      { name: t("menu.items.the_freddo"), price: "€3,50" },
+      { name: t("menu.items.crodino"), price: "€3,50" },
       { name: t("menu.items.spritz_aperol"), price: "€4,00" },
       { name: t("menu.items.spritz_campari"), price: "€4,50" },
       { name: t("menu.items.birra_egg"), price: "€3,00" },
+      { name: t("menu.items.birra_egg_040"), price: "€5,00" },
+      { name: t("menu.items.birra_men_025"), price: "€4,00" },
       { name: t("menu.items.birra_men"), price: "€6,00" },
+    ],
+    caffetteria: [
+      { name: t("menu.items.caffe"), price: "€1,50" },
+      { name: t("menu.items.cappuccino"), price: "€2,00" },
+      { name: t("menu.items.decaffeinato"), price: "€1,80" },
+      { name: t("menu.items.orzo"), price: "€1,60" },
+      { name: t("menu.items.ginseng"), price: "€1,80" },
+      { name: t("menu.items.caffe_corretto"), price: "€2,40" },
+      { name: t("menu.items.the_caldo"), price: "€2,00" },
+      { name: t("menu.items.infusi"), price: "€3,00" },
+    ],
+    liquori: [
+      { name: t("menu.items.amari"), price: "€5,00" },
+      { name: t("menu.items.grappe"), price: "€4,00" },
     ],
   }
 
@@ -561,8 +594,8 @@ function RestaurantContent() {
                       >
                         <article className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 md:p-5">
                           <header className="mb-2 flex items-start justify-between gap-3">
-                            <h4 className="text-sm sm:text-base md:text-lg font-medium leading-tight">{item.name}</h4>
-                            <span className="shrink-0 rounded-xl border border-white/10 bg-black/30 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
+                            <h4 className="min-w-0 break-words text-sm sm:text-base md:text-lg font-medium leading-tight">{item.name}</h4>
+                            <span className="shrink-0 whitespace-nowrap rounded-xl border border-white/10 bg-black/30 px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold">
                               {item.price}
                             </span>
                           </header>
