@@ -174,13 +174,13 @@ function RestaurantContent() {
       `}</style>
 
       <nav className="fixed top-0 left-0 right-0 z-50 glass-morphism border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <motion.img
               src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1d87e5d2e62b54c46ec1c_busa_del_sauc.png"
               alt="La Busa del Sauc"
-              className={`h-12 sm:h-10 md:h-12 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-0"}`}
+              className={`h-10 sm:h-10 md:h-12 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-0"}`}
               whileHover={{ scale: 1.05 }}
             />
 
@@ -214,9 +214,10 @@ function RestaurantContent() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className={`h-12 w-12 sm:h-10 sm:w-10 p-0 hover:bg-white/10 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                aria-label={theme === "dark" ? "Passa al tema chiaro" : "Passa al tema scuro"}
+                className={`h-11 w-11 sm:h-10 sm:w-10 p-0 hover:bg-white/10 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
               >
-                {theme === "dark" ? <Sun className="h-8 w-8 sm:h-4 sm:w-4" /> : <Moon className="h-8 w-8 sm:h-4 sm:w-4" />}
+                {theme === "dark" ? <Sun className="h-5 w-5 sm:h-4 sm:w-4" /> : <Moon className="h-5 w-5 sm:h-4 sm:w-4" />}
               </Button>
 
               {/* Language Selector */}
@@ -225,9 +226,9 @@ function RestaurantContent() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                  className={`hover:bg-white/10 px-4 sm:px-3 py-3 sm:py-2 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
+                  className={`h-11 hover:bg-white/10 px-3 sm:px-3 py-2 ${theme === "dark" ? "text-white" : "text-slate-800"}`}
                 >
-                  <Globe className="h-8 w-8 sm:h-4 sm:w-4 mr-2 sm:mr-2" />
+                  <Globe className="h-5 w-5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                   <span className="text-base sm:text-sm font-medium">
                     {languages[language].flag} <span className="hidden sm:inline">{language}</span>
                   </span>
@@ -265,19 +266,19 @@ function RestaurantContent() {
       </nav>
 
       {/* Hero Section - Ultra Compact Version */}
-      <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section id="home" className="relative min-h-[100svh] sm:h-screen flex items-center justify-center overflow-hidden">
         <HeroSlideshow />
 
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4 pt-24 z-20">
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4 pt-20 pb-24 sm:pt-24 sm:pb-10 z-20">
           
           {/* Benvenuti Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, delay: 0.3 }}
-            className="mb-4"
+            className="mb-3 sm:mb-4 w-full"
           >
-            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-3 py-2 mb-6 inline-block">
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-3 py-1.5 mb-4 sm:mb-6 inline-block">
               <p className={`text-sm font-light uppercase tracking-widest ${
                 theme === "dark" ? "text-[#ff0092]" : "text-amber-400"
               }`}>
@@ -285,8 +286,9 @@ function RestaurantContent() {
               </p>
             </div>
             
-            <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold text-white mb-6 leading-tight">
-              La Busa del Sauc
+            <h1 className="mx-auto text-[3.35rem] sm:text-7xl md:text-8xl font-bold text-white mb-3 sm:mb-6 leading-[0.92] sm:leading-tight">
+              <span className="block sm:inline">La Busa</span>
+              <span className="block sm:inline"> del Sauc</span>
             </h1>
           </motion.div>
 
@@ -295,10 +297,10 @@ function RestaurantContent() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="mb-6 sm:mb-8"
+            className="mb-4 sm:mb-8"
           >
-            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-6 py-4 max-w-2xl mx-auto">
-              <p className="text-base sm:text-lg font-light leading-relaxed">
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-4 py-3 sm:px-6 sm:py-4 max-w-2xl mx-auto">
+              <p className="text-sm sm:text-lg font-light leading-relaxed">
                 {t("hero.subtitle")}
               </p>
             </div>
@@ -308,7 +310,7 @@ function RestaurantContent() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.78 }}
-            className="mb-6 flex w-full max-w-3xl flex-col gap-3 rounded-xl border border-white/20 bg-black/25 p-3 text-left backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"
+            className="mb-4 sm:mb-6 flex w-full max-w-3xl flex-col gap-3 rounded-xl border border-white/20 bg-black/25 p-3 text-left backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-center gap-3">
               <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${isOpenNow ? "bg-emerald-400/20 text-emerald-200" : "bg-white/15 text-white"}`}>
@@ -319,7 +321,7 @@ function RestaurantContent() {
                 <p className="text-xs text-white/80">{t("hours.summary")}</p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 sm:flex">
+            <div className="hidden grid-cols-2 gap-2 sm:flex">
               <a
                 href={phoneHref}
                 className="inline-flex min-h-11 items-center justify-center rounded-lg border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
@@ -344,7 +346,7 @@ function RestaurantContent() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.9 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl"
+            className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 w-full max-w-3xl"
           >
             <Button
               size="lg"
@@ -359,7 +361,7 @@ function RestaurantContent() {
               }
             >
               <ExternalLink className="mr-2 h-5 w-5" />
-              {t("menu")}
+              {t("nav.menu")}
             </Button>
 
             <Button
@@ -375,14 +377,14 @@ function RestaurantContent() {
               href="https://www.wearerighello.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 h-12 px-4"
+              className="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 h-10 sm:h-12 px-4"
             >
               <img
                 src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/6814c5b54bc85218c633c5a8_Righello_logo_E.png"
                 alt="Righello Icon"
                 className={`w-5 h-5 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
               />
-              <div className="flex flex-col items-start">
+              <div className="flex items-center gap-2 sm:flex-col sm:items-start sm:gap-0">
                 <span className="text-xs uppercase tracking-wider opacity-80 font-medium">
                   Partner of
                 </span>
@@ -399,7 +401,7 @@ function RestaurantContent() {
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-          className="absolute bottom-3 sm:bottom-6 left-1/2 transform -translate-x-1/2 text-white z-[5]"
+          className="hidden sm:block absolute bottom-3 sm:bottom-6 left-1/2 transform -translate-x-1/2 text-white z-[5]"
         >
           <ChevronDown size={22} />
         </motion.div>
@@ -455,7 +457,7 @@ function RestaurantContent() {
                     }
                   >
                     <ExternalLink className="mr-2 h-4 w-4" />
-                    {t("menu")}
+                    {t("nav.menu")}
                   </Button>
                 </div>
                 <div className="space-y-6 sm:space-y-8">
@@ -527,7 +529,7 @@ function RestaurantContent() {
               }
             >
               <ExternalLink className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              {t("menu")}
+              {t("nav.menu")}
             </Button>
           </motion.div>
 
@@ -1051,13 +1053,12 @@ function RestaurantContent() {
         </div>
       )}
 
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-black/85 px-3 py-3 backdrop-blur-lg sm:hidden">
+      <div className="mobile-action-bar fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-black/85 px-3 py-3 backdrop-blur-lg sm:hidden">
         <div className="grid grid-cols-3 gap-2">
           <a
             href={phoneHref}
             className="inline-flex min-h-11 items-center justify-center rounded-lg bg-white/10 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
           >
-            <Phone className="mr-1.5 h-4 w-4" aria-hidden="true" />
             {t("action.call")}
           </a>
           <a

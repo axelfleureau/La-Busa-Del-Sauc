@@ -43,8 +43,9 @@ export function CustomCursor() {
   }, [])
 
   useEffect(() => {
-    const hasFinePointer = window.matchMedia("(pointer: fine)").matches
-    if (!hasFinePointer) return
+    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    const isDesktopWidth = document.documentElement.clientWidth >= 769
+    if (!canHover || !isDesktopWidth) return
 
     setEnabled(true)
 
@@ -98,9 +99,16 @@ export function CustomCursor() {
             cursor: none !important;
           }
         }
+
+        @media (max-width: 768px), (hover: none), (pointer: coarse) {
+          .custom-cursor {
+            display: none !important;
+          }
+        }
       `}</style>
       <div
         ref={outerRef}
+        className="custom-cursor"
         style={{
           position: "fixed",
           top: 0,
@@ -120,6 +128,7 @@ export function CustomCursor() {
       />
       <div
         ref={innerRef}
+        className="custom-cursor"
         style={{
           position: "fixed",
           top: 0,
