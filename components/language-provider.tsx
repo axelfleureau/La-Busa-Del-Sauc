@@ -189,6 +189,15 @@ const translations = {
     CZ: "Nápoje",
     AL: "Beverages",
   },
+  "menu.birre": {
+    IT: "Birre",
+    EN: "Beers",
+    DE: "Biere",
+    BS: "Piva",
+    RU: "Пиво",
+    CZ: "Piva",
+    AL: "Birra",
+  },
   "menu.dessert": {
     IT: "Dessert",
     EN: "Dessert",

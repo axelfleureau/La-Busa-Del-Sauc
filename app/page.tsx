@@ -114,8 +114,8 @@ function RestaurantContent() {
     ],
     contorni: [
       { name: t("menu.items.patate"), price: "€5,00" },
-      { name: t("menu.items.funghi"), price: "€6,00" },
       { name: t("menu.items.spinaci"), price: "€5,00" },
+      { name: t("menu.items.funghi"), price: "€6,00" },
       { name: t("menu.items.insalata"), price: "€7,00" },
     ],
     dessert: [
@@ -136,6 +136,8 @@ function RestaurantContent() {
       { name: t("menu.items.crodino"), price: "€3,50" },
       { name: t("menu.items.spritz_aperol"), price: "€4,00" },
       { name: t("menu.items.spritz_campari"), price: "€4,50" },
+    ],
+    birre: [
       { name: t("menu.items.birra_egg"), price: "€3,00" },
       { name: t("menu.items.birra_egg_040"), price: "€5,00" },
       { name: t("menu.items.birra_men_025"), price: "€4,00" },
