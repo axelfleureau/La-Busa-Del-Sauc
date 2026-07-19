@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, useScroll } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   ChevronDown,
   Phone,
@@ -13,6 +13,8 @@ import {
   Sun,
   Moon,
   Globe,
+  MessageCircle,
+  Navigation,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { HeroSlideshow } from "@/components/hero-slideshow"
@@ -24,9 +26,30 @@ function RestaurantContent() {
   const [activeSection, setActiveSection] = useState("home")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+  const [now, setNow] = useState(() => new Date())
   const { theme, setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
-  const { scrollY } = useScroll()
+
+  const phoneDisplay = "389 443 0724"
+  const phoneHref = "tel:+393894430724"
+  const whatsappHref = "https://wa.me/393894430724"
+  const mapsHref = "https://www.google.com/maps/search/?api=1&query=La%20Busa%20del%20Sauc%20Piazzale%20della%20Puppa%20Piancavallo"
+  const currentTimeParts = new Intl.DateTimeFormat("it-IT", {
+    timeZone: "Europe/Rome",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(now)
+  const currentHour = Number(currentTimeParts.find((part) => part.type === "hour")?.value ?? 0)
+  const currentMinute = Number(currentTimeParts.find((part) => part.type === "minute")?.value ?? 0)
+  const currentWeekday = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Europe/Rome",
+    weekday: "short",
+  }).format(now)
+  const currentDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(currentWeekday)
+  const currentMinutes = currentHour * 60 + currentMinute
+  const isOpenDay = currentDay === 0 || currentDay >= 3
+  const isOpenNow = isOpenDay && currentMinutes >= 10 * 60 + 30 && currentMinutes < 22 * 60 + 30
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,6 +70,11 @@ function RestaurantContent() {
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(new Date()), 60000)
+    return () => window.clearInterval(interval)
   }, [])
 
   const scrollToSection = (sectionId: string) => {
@@ -267,12 +295,47 @@ function RestaurantContent() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
             <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg px-6 py-4 max-w-2xl mx-auto">
               <p className="text-base sm:text-lg font-light leading-relaxed">
                 {t("hero.subtitle")}
               </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.78 }}
+            className="mb-6 flex w-full max-w-3xl flex-col gap-3 rounded-xl border border-white/20 bg-black/25 p-3 text-left backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${isOpenNow ? "bg-emerald-400/20 text-emerald-200" : "bg-white/15 text-white"}`}>
+                <Clock className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold">{isOpenNow ? t("status.open") : t("status.closed")}</p>
+                <p className="text-xs text-white/80">{t("hours.summary")}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 sm:flex">
+              <a
+                href={phoneHref}
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              >
+                <Phone className="mr-2 h-4 w-4" aria-hidden="true" />
+                {t("action.call")}
+              </a>
+              <a
+                href={mapsHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              >
+                <Navigation className="mr-2 h-4 w-4" aria-hidden="true" />
+                {t("action.directions")}
+              </a>
             </div>
           </motion.div>
 
@@ -625,10 +688,17 @@ function RestaurantContent() {
                       </div>
                       <div className="space-y-3 text-sm leading-relaxed">
                         <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">Venerdì–Domenica:</span> {t("hours.weekend")}
+                          <span className="font-medium">{t("hours.openDays")}</span>
+                          <br />
+                          <span>{t("hours.time")}</span>
+                          <br />
+                          <span className="text-xs opacity-80">{t("hours.source")}</span>
                         </p>
                         <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">Lunedì–Giovedì:</span> {t("hours.weekdays")}
+                          <span className="font-medium">{t("hours.closedDays")}</span>
+                        </p>
+                        <p className={`rounded-xl border p-3 font-semibold ${isOpenNow ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-700 dark:text-emerald-200" : "border-white/10 bg-black/20"}`}>
+                          {isOpenNow ? t("status.open") : t("status.closed")}
                         </p>
                       </div>
                     </section>
@@ -649,10 +719,28 @@ function RestaurantContent() {
                       </div>
                       <div className="space-y-3 text-sm leading-relaxed">
                         <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">389 443 0724</span>
+                          <span className="font-medium">{phoneDisplay}</span>
                           <br />
                           <span className="text-xs opacity-80">{t("whatsapp.info")}</span>
                         </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <a
+                            href={phoneHref}
+                            className={`inline-flex min-h-11 items-center justify-center rounded-xl px-3 text-sm font-semibold text-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-600"}`}
+                          >
+                            <Phone className="mr-2 h-4 w-4" aria-hidden="true" />
+                            {t("action.call")}
+                          </a>
+                          <a
+                            href={whatsappHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-semibold transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          >
+                            <MessageCircle className="mr-2 h-4 w-4" aria-hidden="true" />
+                            WhatsApp
+                          </a>
+                        </div>
                       </div>
                     </section>
 
@@ -706,17 +794,26 @@ function RestaurantContent() {
                     <p
                       className={`font-inter text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 ${theme === "dark" ? "text-white" : "text-slate-900"}`}
                     >
-                      media 25€
+                      10-20 €
                     </p>
                     <p className="font-inter text-base sm:text-lg opacity-80">{t("contact.perPerson")}</p>
                   </div>
                 </div>
 
                 <div className="professional-container p-6 sm:p-8 lg:p-10">
-                  <div className="professional-container p-6 sm:p-8">
+                  <div className="professional-container p-6 sm:p-8 space-y-4">
                     <p className="font-inter text-sm sm:text-base leading-relaxed text-center">
                       {t("contact.reservationInfo")}
                     </p>
+                    <a
+                      href={mapsHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-semibold text-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${theme === "dark" ? "bg-[#ff0092] hover:bg-[#ff3daa]" : "bg-amber-500 hover:bg-amber-600"}`}
+                    >
+                      <Navigation className="mr-2 h-4 w-4" aria-hidden="true" />
+                      {t("action.openMaps")}
+                    </a>
                   </div>
                 </div>
               </div>
@@ -758,9 +855,11 @@ function RestaurantContent() {
                 {t("contact.hours")}
               </h3>
               <p className="text-slate-400 text-sm sm:text-base">
-                {t("hours.weekend")}
+                {t("hours.openDays")}
                 <br />
-                {t("hours.weekdays")}
+                {t("hours.time")}
+                <br />
+                {t("hours.closedDays")}
               </p>
             </div>
           </div>
@@ -951,6 +1050,36 @@ function RestaurantContent() {
           </motion.div>
         </div>
       )}
+
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-black/85 px-3 py-3 backdrop-blur-lg sm:hidden">
+        <div className="grid grid-cols-3 gap-2">
+          <a
+            href={phoneHref}
+            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-white/10 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          >
+            <Phone className="mr-1.5 h-4 w-4" aria-hidden="true" />
+            {t("action.call")}
+          </a>
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex min-h-11 items-center justify-center rounded-lg text-sm font-semibold text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${theme === "dark" ? "bg-[#ff0092]" : "bg-amber-500"}`}
+          >
+            <MessageCircle className="mr-1.5 h-4 w-4" aria-hidden="true" />
+            WhatsApp
+          </a>
+          <a
+            href={mapsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-white/10 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          >
+            <Navigation className="mr-1.5 h-4 w-4" aria-hidden="true" />
+            Maps
+          </a>
+        </div>
+      </div>
     </div>
   )
 }

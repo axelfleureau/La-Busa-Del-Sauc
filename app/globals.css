@@ -219,6 +219,10 @@ html {
   overflow-x: hidden;
 }
 
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -310,5 +314,20 @@ html {
     max-width: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
+  }
+
+  body {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 72px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
