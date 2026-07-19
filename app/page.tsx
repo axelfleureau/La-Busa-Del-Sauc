@@ -168,7 +168,7 @@ function RestaurantContent() {
     "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb90555aeb9253567ee_menu%CC%80_busa-199.jpg",
     "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb9c67818c7beaf240e_menu%CC%80_busa-166.jpg",
     "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb9938d0e62b680b4fc_menu%CC%80_busa-129.jpg",
-    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb9a35264ecb8a55616_busa_interno_vini.jpg",
+    "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1dcb843491d0fbd97fd95_menu%CC%80_busa-075.jpg",
   ]
 
   const interiorImages = [
