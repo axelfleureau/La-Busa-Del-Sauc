@@ -17,6 +17,7 @@ import {
   Navigation,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { getHoursSeason } from "@/lib/hours"
 import { HeroSlideshow } from "@/components/hero-slideshow"
 import { CustomCursor } from "@/components/custom-cursor"
 import { ThemeProvider, useTheme } from "@/components/theme-provider"
@@ -48,8 +49,18 @@ function RestaurantContent() {
   }).format(now)
   const currentDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(currentWeekday)
   const currentMinutes = currentHour * 60 + currentMinute
-  const isOpenDay = currentDay === 0 || currentDay >= 3
+  const hoursSeason = getHoursSeason(now)
+  const everyDaySeason = hoursSeason === "august"
+  const augustNotice = everyDaySeason
+    ? t("hours.augustNote")
+    : hoursSeason === "august-upcoming"
+      ? t("hours.augustUpcoming")
+      : null
+  const isOpenDay = everyDaySeason || currentDay === 0 || currentDay >= 3
   const isOpenNow = isOpenDay && currentMinutes >= 10 * 60 + 30 && currentMinutes < 22 * 60 + 30
+  const openDaysLabel = everyDaySeason ? t("hours.openDaysAugust") : t("hours.openDays")
+  const scheduleNote = everyDaySeason ? t("hours.augustNote") : t("hours.closedDays")
+  const hoursSummary = everyDaySeason ? t("hours.summaryAugust") : t("hours.summary")
   const currentYear = now.getFullYear()
 
   useEffect(() => {
@@ -354,7 +365,10 @@ function RestaurantContent() {
               </span>
               <div>
                 <p className="text-sm font-semibold">{isOpenNow ? t("status.open") : t("status.closed")}</p>
-                <p className="text-xs text-white/80">{t("hours.summary")}</p>
+                <p className="text-xs text-white/80">{hoursSummary}</p>
+                {hoursSeason === "august-upcoming" && augustNotice && (
+                  <p className="mt-1 text-xs font-semibold text-emerald-200">{augustNotice}</p>
+                )}
               </div>
             </div>
             <div className="hidden grid-cols-2 gap-2 sm:flex">
@@ -726,15 +740,22 @@ function RestaurantContent() {
                       </div>
                       <div className="space-y-3 text-sm leading-relaxed">
                         <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">{t("hours.openDays")}</span>
+                          <span className="font-medium">{openDaysLabel}</span>
                           <br />
                           <span>{t("hours.time")}</span>
                           <br />
                           <span className="text-xs opacity-80">{t("hours.source")}</span>
                         </p>
-                        <p className="rounded-xl border border-white/10 bg-black/20 p-3">
-                          <span className="font-medium">{t("hours.closedDays")}</span>
+                        <p
+                          className={`rounded-xl border p-3 ${everyDaySeason ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-700 dark:text-emerald-200" : "border-white/10 bg-black/20"}`}
+                        >
+                          <span className="font-medium">{scheduleNote}</span>
                         </p>
+                        {hoursSeason === "august-upcoming" && augustNotice && (
+                          <p className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-3 font-semibold text-emerald-700 dark:text-emerald-200">
+                            {augustNotice}
+                          </p>
+                        )}
                         <p className={`rounded-xl border p-3 font-semibold ${isOpenNow ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-700 dark:text-emerald-200" : "border-white/10 bg-black/20"}`}>
                           {isOpenNow ? t("status.open") : t("status.closed")}
                         </p>
@@ -893,12 +914,15 @@ function RestaurantContent() {
                 {t("contact.hours")}
               </h3>
               <p className="text-slate-400 text-sm sm:text-base">
-                {t("hours.openDays")}
+                {openDaysLabel}
                 <br />
                 {t("hours.time")}
                 <br />
-                {t("hours.closedDays")}
+                {scheduleNote}
               </p>
+              {hoursSeason === "august-upcoming" && augustNotice && (
+                <p className="mt-2 text-sm font-semibold text-emerald-400 sm:text-base">{augustNotice}</p>
+              )}
             </div>
           </div>
 

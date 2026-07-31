@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
+import { getHoursSeason } from "@/lib/hours"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,7 +16,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "La Busa del Sauc - Premium Mountain Restaurant | Piancavallo",
   description:
-    "Experience authentic mountain cuisine at La Busa del Sauc in Piancavallo. Open Sunday and Wednesday-Saturday, 10:30-22:30.",
+    getHoursSeason(new Date()) === "regular"
+      ? "Experience authentic mountain cuisine at La Busa del Sauc in Piancavallo. Open Sunday and Wednesday-Saturday, 10:30-22:30."
+      : "Experience authentic mountain cuisine at La Busa del Sauc in Piancavallo. In August open every day, 10:30-22:30.",
   keywords: "restaurant, mountain cuisine, Piancavallo, Italian food, traditional dining, premium restaurant",
   openGraph: {
     title: "La Busa del Sauc - Premium Mountain Restaurant",
