@@ -10,6 +10,7 @@ import {
   Instagram,
   Facebook,
   ExternalLink,
+  Fish,
   Sun,
   Moon,
   Globe,
@@ -18,6 +19,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getHoursSeason } from "@/lib/hours"
+import { formatSpecialMenuDate, getUpcomingSpecialMenu } from "@/lib/special-menu"
 import { HeroSlideshow } from "@/components/hero-slideshow"
 import { CustomCursor } from "@/components/custom-cursor"
 import { ThemeProvider, useTheme } from "@/components/theme-provider"
@@ -62,6 +64,14 @@ function RestaurantContent() {
   const scheduleNote = everyDaySeason ? t("hours.augustNote") : t("hours.closedDays")
   const hoursSummary = everyDaySeason ? t("hours.summaryAugust") : t("hours.summary")
   const currentYear = now.getFullYear()
+
+  const specialMenu = getUpcomingSpecialMenu(now)
+  const specialMenuDate = specialMenu ? formatSpecialMenuDate(specialMenu.date, language) : null
+  const specialMenuHref = specialMenu
+    ? `https://wa.me/393894430724?text=${encodeURIComponent(
+        `Buongiorno, vorrei prenotare per la serata "${t(`special.${specialMenu.id}.title` as any)}" di ${specialMenuDate}.`,
+      )}`
+    : whatsappHref
 
   useEffect(() => {
     const handleScroll = () => {
@@ -391,6 +401,31 @@ function RestaurantContent() {
             </div>
           </motion.div>
 
+          {/* Serata speciale a menu fisso */}
+          {specialMenu && (
+            <motion.button
+              type="button"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.84 }}
+              onClick={() => scrollToSection("menu")}
+              className="mb-4 sm:mb-6 flex w-full max-w-3xl items-center gap-3 rounded-xl border border-sky-300/40 bg-sky-400/15 p-3 text-left backdrop-blur-md transition-colors hover:bg-sky-400/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
+            >
+              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-300/25 text-sky-100">
+                <Fish className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold capitalize">
+                  {t("special.label")} · {specialMenuDate}
+                </span>
+                <span className="block truncate text-xs text-white/85">
+                  {t(`special.${specialMenu.id}.title` as any)} · {specialMenu.price} · {t("special.reservationOnly")}
+                </span>
+              </span>
+              <ChevronDown className="ml-auto hidden h-5 w-5 shrink-0 text-white/70 sm:block" aria-hidden="true" />
+            </motion.button>
+          )}
+
           {/* Pulsanti */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -582,6 +617,66 @@ function RestaurantContent() {
               {t("nav.menu")}
             </Button>
           </motion.div>
+
+          {specialMenu && (
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="mb-10 sm:mb-14"
+            >
+              <div className="professional-container overflow-hidden rounded-3xl border border-sky-300/30 bg-sky-400/10 p-6 sm:p-8 lg:p-10">
+                <div className="mb-6 flex flex-wrap items-center gap-3">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-sky-300/40 bg-sky-400/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-100">
+                    <Fish className="h-4 w-4" aria-hidden="true" />
+                    {t("special.label")}
+                  </span>
+                  <span className="inline-flex items-center rounded-full border border-white/15 bg-black/30 px-3 py-1 text-xs font-semibold capitalize sm:text-sm">
+                    {specialMenuDate}
+                  </span>
+                </div>
+
+                <h3 className="font-inter text-2xl font-bold sm:text-3xl md:text-4xl">
+                  {t(`special.${specialMenu.id}.title` as any)}
+                </h3>
+
+                <div className="mt-6 space-y-4 sm:space-y-5">
+                  {specialMenu.courses.map((course) => (
+                    <article key={course} className="rounded-2xl border border-white/10 bg-black/20 p-4 sm:p-5">
+                      <h4 className="text-base font-semibold sm:text-lg">
+                        {t(`special.${specialMenu.id}.${course}.name` as any)}
+                      </h4>
+                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                        {t(`special.${specialMenu.id}.${course}.description` as any)}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-2xl font-bold sm:text-3xl">
+                      {specialMenu.price}{" "}
+                      <span className="text-sm font-medium text-muted-foreground sm:text-base">
+                        {t("contact.perPerson")}
+                      </span>
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-sky-200">{t("special.reservationOnly")}</p>
+                  </div>
+                  <a
+                    href={specialMenuHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#25D366] px-6 text-base font-semibold text-black transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                  >
+                    <MessageCircle className="mr-2 h-5 w-5" aria-hidden="true" />
+                    {t("special.book")}
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-10">
             {Object.entries(menuItems).map(([category, items], categoryIndex) => (
