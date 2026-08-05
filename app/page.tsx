@@ -17,19 +17,23 @@ import {
   MessageCircle,
   Navigation,
 } from "lucide-react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { getHoursSeason } from "@/lib/hours"
-import { formatSpecialMenuDate, getUpcomingSpecialMenu } from "@/lib/special-menu"
+import { computeRestaurantStatus } from "@/lib/clock"
+import { formatSpecialMenuDate } from "@/lib/special-menu"
 import { HeroSlideshow } from "@/components/hero-slideshow"
 import { CustomCursor } from "@/components/custom-cursor"
 import { ThemeProvider, useTheme } from "@/components/theme-provider"
 import { LanguageProvider, useLanguage, languages } from "@/components/language-provider"
 
+const LOGO_SRC =
+  "https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1d87e5d2e62b54c46ec1c_busa_del_sauc.png"
+
 function RestaurantContent() {
   const [activeSection, setActiveSection] = useState("home")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
-  const [now, setNow] = useState(() => new Date())
+  const [status, setStatus] = useState(() => computeRestaurantStatus(new Date()))
   const { theme, setTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
 
@@ -37,35 +41,17 @@ function RestaurantContent() {
   const phoneHref = "tel:+393894430724"
   const whatsappHref = "https://wa.me/393894430724"
   const mapsHref = "https://www.google.com/maps/search/?api=1&query=La%20Busa%20del%20Sauc%20Piazzale%20della%20Puppa%20Piancavallo"
-  const currentTimeParts = new Intl.DateTimeFormat("it-IT", {
-    timeZone: "Europe/Rome",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).formatToParts(now)
-  const currentHour = Number(currentTimeParts.find((part) => part.type === "hour")?.value ?? 0)
-  const currentMinute = Number(currentTimeParts.find((part) => part.type === "minute")?.value ?? 0)
-  const currentWeekday = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Europe/Rome",
-    weekday: "short",
-  }).format(now)
-  const currentDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(currentWeekday)
-  const currentMinutes = currentHour * 60 + currentMinute
-  const hoursSeason = getHoursSeason(now)
+  const { isOpenNow, hoursSeason, specialMenu, year: currentYear } = status
   const everyDaySeason = hoursSeason === "august"
   const augustNotice = everyDaySeason
     ? t("hours.augustNote")
     : hoursSeason === "august-upcoming"
       ? t("hours.augustUpcoming")
       : null
-  const isOpenDay = everyDaySeason || currentDay === 0 || currentDay >= 3
-  const isOpenNow = isOpenDay && currentMinutes >= 10 * 60 + 30 && currentMinutes < 22 * 60 + 30
   const openDaysLabel = everyDaySeason ? t("hours.openDaysAugust") : t("hours.openDays")
   const scheduleNote = everyDaySeason ? t("hours.augustNote") : t("hours.closedDays")
   const hoursSummary = everyDaySeason ? t("hours.summaryAugust") : t("hours.summary")
-  const currentYear = now.getFullYear()
 
-  const specialMenu = getUpcomingSpecialMenu(now)
   const specialMenuDate = specialMenu ? formatSpecialMenuDate(specialMenu.date, language) : null
   const specialMenuHref = specialMenu
     ? `https://wa.me/393894430724?text=${encodeURIComponent(
@@ -95,7 +81,14 @@ function RestaurantContent() {
   }, [])
 
   useEffect(() => {
-    const interval = window.setInterval(() => setNow(new Date()), 60000)
+    // Se nulla di visibile e' cambiato restituiamo lo stesso oggetto: React
+    // interrompe il render e la pagina non si ricostruisce ogni minuto.
+    const interval = window.setInterval(() => {
+      setStatus((previous) => {
+        const next = computeRestaurantStatus(new Date())
+        return next.key === previous.key ? previous : next
+      })
+    }, 60000)
     return () => window.clearInterval(interval)
   }, [])
 
@@ -234,12 +227,18 @@ function RestaurantContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <motion.img
-              src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1d87e5d2e62b54c46ec1c_busa_del_sauc.png"
-              alt="La Busa del Sauc"
-              className={`h-10 sm:h-10 md:h-12 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-0"}`}
-              whileHover={{ scale: 1.05 }}
-            />
+            <motion.div whileHover={{ scale: 1.05 }} className="shrink-0">
+              <Image
+                src={LOGO_SRC}
+                alt="La Busa del Sauc"
+                width={200}
+                height={48}
+                priority
+                quality={80}
+                sizes="200px"
+                className={`h-10 sm:h-10 md:h-12 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-0"}`}
+              />
+            </motion.div>
 
             {/* Desktop Navigation Links */}
             <div className="hidden lg:flex space-x-6 xl:space-x-8">
@@ -464,19 +463,25 @@ function RestaurantContent() {
               rel="noopener noreferrer"
               className="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 h-10 sm:h-12 px-4"
             >
-              <img
+              <Image
                 src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/6814c5b54bc85218c633c5a8_Righello_logo_E.png"
-                alt="Righello Icon"
+                alt=""
+                aria-hidden="true"
+                width={20}
+                height={20}
                 className={`w-5 h-5 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
               />
               <div className="flex items-center gap-2 sm:flex-col sm:items-start sm:gap-0">
                 <span className="text-xs uppercase tracking-wider opacity-80 font-medium">
                   Partner of
                 </span>
-                <img
+                <Image
                   src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/65774a509c1f2e0f55137c8e_Logo_righello.svg"
                   alt="Righello"
-                  className={`h-3 ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
+                  width={72}
+                  height={12}
+                  unoptimized
+                  className={`h-3 w-auto ${theme === "dark" ? "brightness-0 invert" : "brightness-100"}`}
                 />
               </div>
             </a>
@@ -568,12 +573,16 @@ function RestaurantContent() {
               className="grid grid-cols-2 gap-4 sm:gap-6"
             >
               {interiorImages.map((image, index) => (
-                <motion.div key={index} whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}>
-                  <div className="professional-container overflow-hidden p-0 professional-hover">
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`Interior ${index + 1}`}
-                      className="w-full h-40 sm:h-48 lg:h-56 object-cover"
+                <motion.div key={image} whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}>
+                  <div className="professional-container relative h-40 sm:h-48 lg:h-56 overflow-hidden p-0 professional-hover">
+                    <Image
+                      src={image}
+                      alt={`Gli ambienti della Busa del Sauc a Piancavallo (${index + 1})`}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
+                      quality={70}
+                      className="object-cover"
                     />
                   </div>
                 </motion.div>
@@ -752,11 +761,15 @@ function RestaurantContent() {
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.03 }}
               >
-                <div className="professional-container overflow-hidden p-0 professional-hover">
-                  <img
-                    src={image || "/placeholder.svg"}
-                    alt={`Food ${index + 1}`}
-                    className="w-full h-40 sm:h-48 lg:h-56 object-cover"
+                <div className="professional-container relative h-40 sm:h-48 lg:h-56 overflow-hidden p-0 professional-hover">
+                  <Image
+                    src={image}
+                    alt={`Piatto della cucina di montagna della Busa del Sauc (${index + 1})`}
+                    fill
+                    loading="lazy"
+                    sizes="(max-width: 640px) 45vw, (max-width: 768px) 45vw, (max-width: 1280px) 30vw, 22vw"
+                    quality={70}
+                    className="object-cover"
                   />
                 </div>
               </motion.div>
@@ -981,9 +994,14 @@ function RestaurantContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
             <div className="sm:col-span-2 md:col-span-1">
-              <motion.img
-                src="https://cdn.prod.website-files.com/65772a4150fc91181591a1e5/68b1d87e5d2e62b54c46ec1c_busa_del_sauc.png"
+              <Image
+                src={LOGO_SRC}
                 alt="La Busa del Sauc"
+                width={266}
+                height={64}
+                loading="lazy"
+                quality={80}
+                sizes="266px"
                 className="h-12 sm:h-16 w-auto brightness-0 invert mb-4"
               />
               <p className="text-slate-400 text-sm sm:text-base">{t("footer.tagline")}</p>
