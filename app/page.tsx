@@ -851,8 +851,6 @@ function RestaurantContent() {
                           <span className="font-medium">{openDaysLabel}</span>
                           <br />
                           <span>{t("hours.time")}</span>
-                          <br />
-                          <span className="text-xs opacity-80">{t("hours.source")}</span>
                         </p>
                         <p
                           className={`rounded-xl border p-3 ${everyDaySeason ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-700 dark:text-emerald-200" : "border-white/10 bg-black/20"}`}

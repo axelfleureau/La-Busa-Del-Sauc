@@ -441,15 +441,6 @@ const translations = {
     CZ: "Otevřeno 10:30-22:30, zavřeno pondělí a úterý",
     AL: "Hapur 10:30-22:30, mbyllur të hënën dhe të martën",
   },
-  "hours.source": {
-    IT: "Fonte: profilo Google, aggiornato dall'attività 2 settimane fa",
-    EN: "Source: Google profile, updated by the business 2 weeks ago",
-    DE: "Quelle: Google-Profil, vom Betrieb vor 2 Wochen aktualisiert",
-    BS: "Izvor: Google profil, ažurirala aktivnost prije 2 sedmice",
-    RU: "Источник: профиль Google, обновлено компанией 2 недели назад",
-    CZ: "Zdroj: profil Google, aktualizováno podnikem před 2 týdny",
-    AL: "Burimi: profili Google, përditësuar nga biznesi 2 javë më parë",
-  },
   "status.open": {
     IT: "Aperto ora",
     EN: "Open now",
